@@ -39,6 +39,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+using namespace std;
 
 //
 // This simulator uses a lot of global variables.
@@ -14601,11 +14602,15 @@ void TimerGame (int dt)
     if (missionstate == 2)
         {
         MissionEnding ++;
-
-        if (MissionEnding >= 25)
+//        cout << "You are Dead!!!!!!!!" << endl;
+        if (MissionEnding >= 1)
             {
             MissionEnding = 0;
-
+            if (mission->id == MISSION_TUTORIAL3){
+                pleaseWait ();
+                createMission(MISSION_TUTORIAL3);
+                game_levelInit();
+            }
             if (mission->id == MISSION_DEMO)
                 {
                 pleaseWait ();
@@ -14619,10 +14624,16 @@ void TimerGame (int dt)
         {
         MissionEnding ++;
 
-        if (MissionEnding >= 25)
+//        if (MissionEnding >= 25)
+          if (MissionEnding >= 1)
             {
             MissionEnding = 0;
-
+//            cout << "Enter here" << endl;
+            if (mission->id == MISSION_TUTORIAL3){
+                pleaseWait ();
+                createMission(MISSION_TUTORIAL3);
+                game_levelInit();
+            }
             if (mission->id == MISSION_DEMO)
                 {
                 pleaseWait ();

@@ -581,3 +581,284 @@
 	<iostream>
 	<sstream>
 
+1539219695 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/3ds.cpp
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	<math.h>
+	"3ds.h"
+	"common.h"
+	"gl.h"
+	"dirs.h"
+	"mathtab.h"
+
+1539219695 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/3ds.h
+	"model.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/model.h
+	"common.h"
+	"vertexarray.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/common.h
+	"config.h"
+	<GL/glut.h>
+	"SDL/SDL.h"
+	"SDL/SDL_thread.h"
+	"SDL/SDL_mixer.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/config.h
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/vertexarray.h
+	"common.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/gl.h
+	"common.h"
+	"model.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/dirs.h
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/mathtab.h
+
+1539219695 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/aiobject.cpp
+	"aiobject.h"
+	"land.h"
+	"glland.h"
+	"main.h"
+	"mathtab.h"
+	"mission.h"
+	"NetworkApi.h"
+
+1539219695 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/aiobject.h
+	"common.h"
+	"model.h"
+	"effects.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/effects.h
+	"model.h"
+	"object.h"
+	"mathtab.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/object.h
+	"model.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/land.h
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/glland.h
+	<string.h>
+	"model.h"
+	"aiobject.h"
+	"effects.h"
+	"land.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/main.h
+	<math.h>
+	<stdio.h>
+	<string.h>
+	<time.h>
+	"aiobject.h"
+	"model.h"
+	"3ds.h"
+	"effects.h"
+	"audio.h"
+	"pilots.h"
+
+1539219695 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/audio.h
+	"common.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/pilots.h
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/mission.h
+	"model.h"
+	"aiobject.h"
+
+1539219695 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/NetworkApi.h
+	"main.h"
+	"glland.h"
+	<ctype.h>
+
+1539219695 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/audio.cpp
+	"audio.h"
+	"dirs.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/cockpit.cpp
+	<stdio.h>
+	"cockpit.h"
+	"main.h"
+	"pilots.h"
+	"mathtab.h"
+	"mission.h"
+	"gl.h"
+	"glland.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/cockpit.h
+	"common.h"
+	"model.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/common.cpp
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	"common.h"
+	"dirs.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/conf.cpp
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	"aiobject.h"
+	"conf.h"
+	"common.h"
+	"dirs.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/conf.h
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/dirs.cpp
+	<stdio.h>
+	<string.h>
+	<unistd.h>
+	<sys/types.h>
+	<sys/stat.h>
+	"dirs.h"
+	"common.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/effects.cpp
+	<math.h>
+	"effects.h"
+	"glland.h"
+	"gl.h"
+	"common.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/fileloader.cpp
+	<stdio.h>
+	<string.h>
+	"fileloader.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/fileloader.h
+
+1539219695 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/FlightModel.cpp
+	"main.h"
+	"menu.h"
+	"maploader.h"
+	"dirs.h"
+	"gl.h"
+	"land.h"
+	"mathtab.h"
+	"cockpit.h"
+	"conf.h"
+	"mission.h"
+	"glland.h"
+	"common.h"
+	<ctype.h>
+	<unistd.h>
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/menu.h
+	"model.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/maploader.h
+	"aiobject.h"
+	"mission.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/gl.cpp
+	<stdio.h>
+	<string.h>
+	<math.h>
+	"gl.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/glland.cpp
+	"glland.h"
+	"main.h"
+	"mathtab.h"
+	"gl.h"
+	"common.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/land.cpp
+	<stdio.h>
+	<math.h>
+	<string.h>
+	"common.h"
+	"land.h"
+	"mathtab.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/loader_tga.cpp
+	<stdio.h>
+	<string.h>
+	<sys/stat.h>
+	"loader_tga.h"
+	"common.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/loader_tga.h
+
+1539222404 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/main.cpp
+	"main.h"
+	"menu.h"
+	"maploader.h"
+	"dirs.h"
+	"gl.h"
+	"land.h"
+	"mathtab.h"
+	"cockpit.h"
+	"conf.h"
+	"mission.h"
+	"glland.h"
+	"common.h"
+	"NetworkApi.h"
+	<zmq.hpp>
+	<string>
+	<iostream>
+	<sstream>
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/mathtab.cpp
+	<math.h>
+	"mathtab.h"
+	"common.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/menu.cpp
+	"menu.h"
+	"main.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/model.cpp
+	<stdio.h>
+	<string.h>
+	<math.h>
+	"model.h"
+	"gl.h"
+	"mathtab.h"
+	"loader_tga.h"
+
+1539219695 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/NetworkApi.cpp
+	"common.h"
+	"glland.h"
+	"NetworkApi.h"
+	"mission.h"
+	<stdio.h>
+	<errno.h>
+	<string.h>
+	<signal.h>
+	<unistd.h>
+	<netinet/in.h>
+	<netdb.h>
+	<arpa/inet.h>
+	<sys/socket.h>
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/object.cpp
+	"object.h"
+	"gl.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/objload.cpp
+	<stdio.h>
+	<math.h>
+	"objload.h"
+
+1539219698 /home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/objload.h
+	"model.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/pilots.cpp
+	<stdio.h>
+	<string.h>
+	"dirs.h"
+	"pilots.h"
+	"mission.h"
+
+1539219698 source:/home/liuxuan1010/Downloads/AIFlightProject/Lac06p50/vertexarray.cpp
+	"vertexarray.h"
+
