@@ -39,7 +39,6 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-using namespace std;
 
 //
 // This simulator uses a lot of global variables.
@@ -13095,7 +13094,25 @@ void sdlMainLoop ()
 
 
 			std::stringstream statess;
-			statess << fplayer->tl->x << " " << fplayer->tl->y << " " << fplayer->tl->z << " " << fplayer->theta << " ";
+			statess << fplayer->tl->x << " " << fplayer->tl->y << " " << fplayer->tl->z << " " << fplayer->realspeed << " " <<
+			fplayer->accx << " " << fplayer->accy << " " << fplayer->accz << " " <<
+			fplayer->phi << " " << fplayer->gamma << " " << fplayer->theta << " " <<
+			fplayer->elevatoreffect << " " << fplayer->ruddereffect << " " << fplayer->rolleffect << " " <<
+			ThreeDObjects[1]->tl->x << " " << ThreeDObjects[1]->tl->y << " " << ThreeDObjects[1]->tl->z << " " <<
+			ThreeDObjects[1]->realspeed << " " <<
+			ThreeDObjects[1]->phi << " " << ThreeDObjects[1]->gamma << " " << ThreeDObjects[1]->theta << " ";
+
+
+			if (!fplayer->active && fplayer->explode >= 35 * timestep) {
+				statess << -1;
+			}
+			else if (!ThreeDObjects[1]->active && ThreeDObjects[1]->explode >= 35 * timestep) {
+				statess << 1;
+			}
+			else {
+				statess << 0;
+			}
+
 			std::string sstate = statess.str();
 			zmq::message_t request (sstate.size());
 			memcpy (request.data (), sstate.c_str(), sstate.size());
@@ -13108,13 +13125,15 @@ void sdlMainLoop ()
 
 			std::stringstream ss(static_cast<char*>(reply.data()));
 
-			int action[5];
+			float action[5];
 
 			ss >> action[0] >> action[1] >> action[2] >> action[3] >> action[4];
 
 			std::cout << "Received " << action[0] << " " << action[1] << " " << action[2] << " " << action[3] << " " << action[4] << " " << std::endl;
 
 			 //control via python array:
+            //switch is for discrete action:
+            /*
             switch (action[0]){
 				case -1:
 				fplayer->elevatoreffect = -0.5f;
@@ -13151,6 +13170,31 @@ void sdlMainLoop ()
 				break;
 
 			}
+			*/
+
+			//if statements are for continuous control
+			if (action[0] < -0.5f) fplayer->elevatoreffect = -0.5f;
+			else if (action[0] > 1.0f) fplayer->elevatoreffect = 1.0f;
+			else fplayer->elevatoreffect = action[0];
+
+
+			if (action[1] < -1.0f) fplayer->rolleffect = -1.0f;
+			else if (action[1] > 1.0f) fplayer->rolleffect = 1.0f;
+			else fplayer->rolleffect = action[1];
+
+
+			if (action[2] < -1.0f) fplayer->ruddereffect = -1.0f;
+			else if (action[2] > 1.0f) fplayer->ruddereffect = 1.0f;
+			else fplayer->ruddereffect = action[2];
+
+
+
+			if (action[3] < 0.5f) event_stopCannon();
+			else event_fireCannon();
+
+			if (action[4] < 0.5f) event_thrustDown();
+			else event_thrustUp();
+/*
 			switch (action[3]){
 				case 0:
 				event_stopCannon();
@@ -13170,6 +13214,9 @@ void sdlMainLoop ()
 				event_thrustUp();
 				break;
 			}
+		*/
+
+
 		}
 
 
@@ -14602,8 +14649,8 @@ void TimerGame (int dt)
     if (missionstate == 2)
         {
         MissionEnding ++;
-//        cout << "You are Dead!!!!!!!!" << endl;
-        if (MissionEnding >= 1)
+
+        if (MissionEnding >= 2)
             {
             MissionEnding = 0;
             if (mission->id == MISSION_TUTORIAL3){
@@ -14624,11 +14671,10 @@ void TimerGame (int dt)
         {
         MissionEnding ++;
 
-//        if (MissionEnding >= 25)
-          if (MissionEnding >= 1)
+        if (MissionEnding >= 2)
             {
             MissionEnding = 0;
-//            cout << "Enter here" << endl;
+
             if (mission->id == MISSION_TUTORIAL3){
                 pleaseWait ();
                 createMission(MISSION_TUTORIAL3);
