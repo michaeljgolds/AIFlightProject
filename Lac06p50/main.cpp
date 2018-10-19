@@ -13125,7 +13125,7 @@ void sdlMainLoop ()
 
 			std::stringstream ss(static_cast<char*>(reply.data()));
 
-			float action[5];
+			char action[5];
 
 			ss >> action[0] >> action[1] >> action[2] >> action[3] >> action[4];
 
@@ -13133,46 +13133,47 @@ void sdlMainLoop ()
 
 			 //control via python array:
             //switch is for discrete action:
-            /*
+            
             switch (action[0]){
-				case -1:
+				case '2':
 				fplayer->elevatoreffect = -0.5f;
 				break;
-				case 0:
+				case '0':
 				fplayer->elevatoreffect = 0.0f;
 				break;
-				case 1:
+				case '1':
 				fplayer->elevatoreffect = 1.0f;
 				break;
 
 			}
             switch (action[1]){
-				case -1:
+				case '2':
 				fplayer->rolleffect = -1.0f;
 				break;
-				case 0:
+				case '0':
 				fplayer->rolleffect = 0.0f;
 				break;
-				case 1:
+				case '1':
 				fplayer->rolleffect = 1.0f;
 				break;
 
 			}
 			switch (action[2]){
-				case -1:
+				case '2':
 				fplayer->ruddereffect = -1.0f;
 				break;
-				case 0:
+				case '0':
 				fplayer->ruddereffect = 0.0f;
 				break;
-				case 1:
+				case '1':
 				fplayer->ruddereffect = 1.0f;
 				break;
 
 			}
-			*/
+			
 
 			//if statements are for continuous control
+/*
 			if (action[0] < -0.5f) fplayer->elevatoreffect = -0.5f;
 			else if (action[0] > 1.0f) fplayer->elevatoreffect = 1.0f;
 			else fplayer->elevatoreffect = action[0];
@@ -13194,27 +13195,26 @@ void sdlMainLoop ()
 
 			if (action[4] < 0.5f) event_thrustDown();
 			else event_thrustUp();
-/*
+*/
+
 			switch (action[3]){
-				case 0:
+				case '0':
 				event_stopCannon();
 				break;
-				case 1:
+				case '1':
 				event_fireCannon();
 				break;
 			}
 
 			switch (action[4]){
-				case -1:
+				case '0':
 				event_thrustDown();
 				break;
-				case 0:
-				break;
-				case 1:
+				case '1':
 				event_thrustUp();
 				break;
 			}
-		*/
+		
 
 
 		}
