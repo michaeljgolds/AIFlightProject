@@ -38,12 +38,12 @@ for i_episode in range(30000):
     print(i_episode)
     observation = np.array(state[0:20])
     while True:
-	#  Wait for next request from client
-	actionNumber = RL.choose_action(observation)
+    #  Wait for next request from client
+        actionNumber = RL.choose_action(observation)
         action = actionList[actionNumber]
         # print(action)
 
-	# print(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " " + str(action[3]) + " " + str(action[4]) + "          ")
+    # print(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " " + str(action[3]) + " " + str(action[4]) + "          ")
         socket.send_string(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " " + str(action[3]) + " " + str(action[4]) + "          ")
         message = socket.recv()
         #print("Received request: %s" % message)
@@ -51,13 +51,15 @@ for i_episode in range(30000):
         #print("Player x,y,z: " + str(state[0:3]))
         #print("Player speed: " + str(state[3]))
 
+        
         observation_ = np.array(state[0:20])
         reward = state[20]
+        donefloat = state[21]
         done = False
-		
+
         RL.store_transition(observation, actionNumber, reward)
-		
-        if reward != 0:
+        
+        if donefloat == 1:
             done = True
 
         if done:
@@ -67,13 +69,17 @@ for i_episode in range(30000):
                 running_reward = ep_rs_sum
             else:
                 running_reward = running_reward * 0.99 + ep_rs_sum * 0.01
-            print("episode:", i_episode, "  reward:", int(running_reward))
+            print("episode:", i_episode, "  reward:", running_reward)
 
             vt = RL.learn()
-
+			
+            RL.SaveNet()
+			
             socket.send_string(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " " + str(action[3]) + " " + str(action[4]) + "          ")
             break            
 
         observation = observation_
+        
+        
         #  Do some 'work'
         #time.sleep(0.038)

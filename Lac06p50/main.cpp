@@ -12952,7 +12952,8 @@ void sdlMainLoop ()
     std::cout << "Connecting to hello world server…" << std::endl;
     socket.connect ("tcp://localhost:5555");
 
-
+    float distToEnemy;
+    float prevDistToEnemy = -1.0f;
     while (true)
         {
 
@@ -13103,14 +13104,20 @@ void sdlMainLoop ()
 			ThreeDObjects[1]->phi << " " << ThreeDObjects[1]->gamma << " " << ThreeDObjects[1]->theta << " ";
 
 
+            distToEnemy = fplayer->distance(ThreeDObjects[1]);
+            if (prevDistToEnemy == -1.0f) prevDistToEnemy = distToEnemy;
+            float rewardFromDist = 0.01 * (distToEnemy < prevDistToEnemy) - 0.01 * (distToEnemy > prevDistToEnemy);
+            
+            prevDistToEnemy = distToEnemy;
+            
 			if (!fplayer->active && fplayer->explode >= 35 * timestep) {
-				statess << -1;
+				statess << (-1.0f + rewardFromDist) << " " << 1;
 			}
 			else if (!ThreeDObjects[1]->active && ThreeDObjects[1]->explode >= 35 * timestep) {
-				statess << 1;
+				statess << (1.0f + rewardFromDist) << " " << 1;
 			}
 			else {
-				statess << 0;
+				statess << (0.0f + rewardFromDist) << " " << 0;
 			}
 
 			std::string sstate = statess.str();

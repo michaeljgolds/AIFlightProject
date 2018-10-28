@@ -45,7 +45,18 @@ class PolicyGradient:
             # tf.train.SummaryWriter soon be deprecated, use following
             tf.summary.FileWriter("logs/", self.sess.graph)
 
-        self.sess.run(tf.global_variables_initializer())
+
+        
+
+        self.saver = tf.train.Saver()
+        try:
+            self.saver.restore(self.sess, "./model.ckpt")
+        except:
+            print("Didn't load model, no file")
+            self.sess.run(tf.global_variables_initializer())
+        
+        
+        
 
     def _build_net(self):
         with tf.name_scope('inputs'):
@@ -55,12 +66,20 @@ class PolicyGradient:
         # fc1
         layer = tf.layers.dense(
             inputs=self.tf_obs,
-            units=10,
+            units=256,
             activation=tf.nn.tanh,  # tanh activation
             kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
             bias_initializer=tf.constant_initializer(0.1),
             name='fc1'
         )
+        #layer2 = tf.layers.dense(
+        #    inputs=layer,
+        #    units=128,
+        #    activation=tf.nn.tanh,  # tanh activation
+        #    kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+        #    bias_initializer=tf.constant_initializer(0.1),
+        #    name='fc2'
+        #)
         # fc2
         all_act = tf.layers.dense(
             inputs=layer,
@@ -121,4 +140,7 @@ class PolicyGradient:
         return discounted_ep_rs
 
 
-
+    def SaveNet(self):
+        save_path = self.saver.save(self.sess, "./model.ckpt")
+        print ("saved to %s" % save_path)
+        

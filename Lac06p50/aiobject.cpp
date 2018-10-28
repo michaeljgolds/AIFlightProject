@@ -25,6 +25,8 @@
 
 #ifndef IS_AIOBJECT_H
 
+#include <iostream>
+
 #include "aiobject.h"
 #include "land.h"
 #include "glland.h"
@@ -59,13 +61,13 @@ extern char SystemMessageBufferA[];
 
 extern unsigned char MissionHeadToHead00State;
 extern unsigned char MyNetworkId;
-extern unsigned char NetworkOpponent; 
+extern unsigned char NetworkOpponent;
 extern unsigned char RecentVictim;
 
-extern int AirfieldXMax;    
-extern int AirfieldXMin;    
-extern int AirfieldYMax;    
-extern int AirfieldYMin;    
+extern int AirfieldXMax;
+extern int AirfieldXMin;
+extern int AirfieldYMax;
+extern int AirfieldYMin;
 extern int IffOnOff;
 extern int MissionNumber;
 extern int NetworkReceiveIntermediateTimer1;
@@ -181,7 +183,7 @@ void DynamicObj::dinit ()
     realism = physics;
     accx = accy = accz = 0;
     DragEffect=1.0;
-    } 
+    }
 
 DynamicObj::DynamicObj ()
     {
@@ -233,7 +235,7 @@ float DynamicObj::distanceXZ (DynamicObj *target)
     }
 
 // check whether the object is exploding or sinking and deactivate if necessary
-void DynamicObj::checkExplosion (Uint32 dt) 
+void DynamicObj::checkExplosion (Uint32 dt)
     {
     if (explode > 0)
         {
@@ -250,7 +252,7 @@ void DynamicObj::checkExplosion (Uint32 dt)
                id == STATIC_AIRFIELD00
                )
                 {
-                
+
                 setExplosion (2.0, 100 * timestep);
                 setBlackSmoke (14.0, 600 * timestep);
                 }
@@ -260,7 +262,7 @@ void DynamicObj::checkExplosion (Uint32 dt)
                 setBlackSmoke (5.5, 80 * timestep);
                 }
             else
-                { 
+                {
                 float zoom2 = zoom * 2;
 
                 if (zoom2 > 2)
@@ -297,9 +299,9 @@ void DynamicObj::checkExplosion (Uint32 dt)
             setBlackSmoke (18.0, 600 * timestep);
             if (id == STATIC_RADARREFLECTOR)
                {
-               
+
                if (tl->x > 0)
-                  { 
+                  {
                   if (ThreeDObjects[29]->Durability > (ThreeDObjects[29]->maxDurability * 0.4))
                      {
                      ThreeDObjects[29]->Durability = ThreeDObjects[29]->maxDurability * 0.39;
@@ -307,7 +309,7 @@ void DynamicObj::checkExplosion (Uint32 dt)
                      }
                   }
                else
-                  { 
+                  {
                   if (ThreeDObjects[28]->Durability > (ThreeDObjects[28]->maxDurability * 0.4))
                      {
                      ThreeDObjects[28]->Durability = ThreeDObjects[28]->maxDurability * 0.39;
@@ -321,15 +323,15 @@ void DynamicObj::checkExplosion (Uint32 dt)
                 explode = 0;
                 draw = true;
                 id = STATIC_PASSIVE;
-                Durability = 100000; 
-                o = &model_rubble1;  
+                Durability = 100000;
+                o = &model_rubble1;
                 zoom *= 0.7F;
 
                 if (zoom > 1)
                     {
                     zoom = 1;
                     }
-                
+
                 tl->y = l->getExactHeight (tl->x, tl->z) + zoom / 4;
                 }
             }
@@ -337,7 +339,7 @@ void DynamicObj::checkExplosion (Uint32 dt)
             {
             explode += dt;
             }
-        } 
+        }
     if (sink)
         {
         sink += dt;
@@ -347,7 +349,7 @@ void DynamicObj::checkExplosion (Uint32 dt)
             ttl = -1;
             }
         }
-    } 
+    }
 
 // check the objects Durability value for damage. Explode/sink if necessary
 void DynamicObj::checkDurability ()
@@ -383,7 +385,7 @@ void DynamicObj::checkDurability ()
                 }
 
             if (id >= STATIC_PASSIVE)
-                { 
+                {
                 if (
                    CurrentMissionNumber != MISSION_NETWORKBATTLE01
                    && CurrentMissionNumber != MISSION_NETWORKBATTLE02
@@ -394,31 +396,31 @@ void DynamicObj::checkDurability ()
                    active = false;
                    }
                 else
-                   { 
+                   {
                    static bool latch = false;
                    if (!latch)
                       {
-                      sound->setVolume (SOUND_EXPLOSION1, 120); 
+                      sound->setVolume (SOUND_EXPLOSION1, 120);
                       sound->play (SOUND_EXPLOSION1, false);
                       latch = true;
                       }
                    if (ThreeDObjects[28]->Durability <= 400)
-                      { 
-                      ThreeDObjects[24]->Durability = 0; 
+                      {
+                      ThreeDObjects[24]->Durability = 0;
                       if (fplayer->target == ThreeDObjects[28])
-                         { 
-                         fplayer->targetNext ((AIObj **) ThreeDObjects); 
+                         {
+                         fplayer->targetNext ((AIObj **) ThreeDObjects);
                          display ("DynamicObj::checkDurability() advancing target beyond destroyed airfield 28.", LOG_MOST);
                          }
                       sound->haltMusic();
                       display ("DynamicObj::checkDurability Playing mission-end music...", LOG_MOST);
                       if (MyNetworkId%2)
-                         { 
+                         {
                          sound->setVolume (SOUND_MISSIONENDINGINSTRUMENTAL, 127);
                          sound->play (SOUND_MISSIONENDINGINSTRUMENTAL, false);
                          }
                       else
-                         { 
+                         {
                          sound->setVolume (SOUND_DEFEAT00, 127);
                          sound->play (SOUND_DEFEAT00, false);
                          }
@@ -430,34 +432,34 @@ void DynamicObj::checkDurability ()
                       NewSystemMessageNeedsScrolling = true;
                       MissionNetworkBattle01RedTeamVictory = true;
                       MissionNetworkBattle02RedTeamVictory = true;
-                      MissionNetworkBattle03RedTeamVictory = true; 
-                      MissionEndingTimer = 13000; 
+                      MissionNetworkBattle03RedTeamVictory = true;
+                      MissionEndingTimer = 13000;
                       if (MyNetworkId & 0x01)
-                         { 
+                         {
                          }
                       else
-                         { 
-                         IffOnOff = 0; 
-                         RadarOnOff = 0; 
+                         {
+                         IffOnOff = 0;
+                         RadarOnOff = 0;
                          }
                       }
                    else if (ThreeDObjects[29]->Durability <= 400)
-                      { 
-                      ThreeDObjects[25]->Durability = 0; 
+                      {
+                      ThreeDObjects[25]->Durability = 0;
                       if (fplayer->target == ThreeDObjects[29])
-                         { 
-                         fplayer->targetNext ((AIObj **) ThreeDObjects); 
+                         {
+                         fplayer->targetNext ((AIObj **) ThreeDObjects);
                          display ("DynamicObj::checkDurability() advancing target beyond destroyed airfield 29.", LOG_MOST);
                          }
                       sound->haltMusic();
                       display ("DynamicObj::checkDurability Playing mission-ending music...", LOG_MOST);
                       if (!MyNetworkId%2)
-                         { 
+                         {
                          sound->setVolume (SOUND_DEFEAT00, 127);
                          sound->play (SOUND_DEFEAT00, false);
                          }
                       else
-                         { 
+                         {
                          sound->setVolume (SOUND_MISSIONENDINGINSTRUMENTAL, 127);
                          sound->play (SOUND_MISSIONENDINGINSTRUMENTAL, false);
                          }
@@ -466,17 +468,17 @@ void DynamicObj::checkDurability ()
 
                       sprintf (SystemMessageBufferA, "THE BLUE TEAM HAS WON THE BATTLE.");
                       NewSystemMessageNeedsScrolling = true;
-                      MissionNetworkBattle01BlueTeamVictory = true; 
+                      MissionNetworkBattle01BlueTeamVictory = true;
                       MissionNetworkBattle02BlueTeamVictory = true;
                       MissionNetworkBattle03BlueTeamVictory = true;
-                      MissionEndingTimer = 6000; 
+                      MissionEndingTimer = 6000;
                       if (MyNetworkId & 0x01)
-                         { 
-                         IffOnOff = 0; 
-                         RadarOnOff = 0; 
+                         {
+                         IffOnOff = 0;
+                         RadarOnOff = 0;
                          }
                       else
-                         { 
+                         {
                          }
                       }
                    else if (ThreeDObjects[24]->Durability <= 0)
@@ -502,57 +504,57 @@ void DynamicObj::checkDurability ()
                 sink = 1;
                 }
         }
-    } 
+    }
 
 // check whether the object collides on the ground and alter gamma and y-translation
 void DynamicObj::crashGround (Uint32 dt)
     {
-    static bool NoseWheelDamageInflicted; 
-    static bool WheelsUpLandingDamageInflicted; 
-    static bool TireSqueakSounded; 
-    static bool LandingDamageSounded; 
-    static bool OceanCrashSounded; 
-    static bool BellyScrapeSounded; 
-    static bool WheelRolloutSounded; 
+    static bool NoseWheelDamageInflicted;
+    static bool WheelsUpLandingDamageInflicted;
+    static bool TireSqueakSounded;
+    static bool LandingDamageSounded;
+    static bool OceanCrashSounded;
+    static bool BellyScrapeSounded;
+    static bool WheelRolloutSounded;
     if (id >= MOVING_GROUND)
-        { 
+        {
         return;
         }
     float TerrainHeightHere = l->getExactHeight (tl->x, tl->z);
     float height = tl->y - TerrainHeightHere;
     if (id >= CANNON1 && id <= CANNON2)
-        { 
+        {
         if (tl->y < TerrainHeightHere)
            {
-           setExplosion (3.0, 30 * timestep); 
+           setExplosion (3.0, 30 * timestep);
            deactivate ();
            }
         }
     if (height < zoom)
-        { 
+        {
         float PlayerAlt;
         float RunwayAlt;
         PlayerAlt = fabs(l->getExactHeight(tl->x, tl->z));
         RunwayAlt = fabs(l->getExactHeight(AirfieldXMin+1, AirfieldYMin+2));
         if (this == (DynamicObj *) fplayer)
-           { 
-           tl->y -= (height - zoom); 
+           {
+           tl->y -= (height - zoom);
            }
         else
-           { 
-           tl->y -= (height - zoom*0.3); 
+           {
+           tl->y -= (height - zoom*0.3);
            }
         if (realspeed < StallSpeed * 0.5)
-           { 
+           {
            if (gamma > 180)
-              { 
-              gamma -= (.005 * timestep); 
+              {
+              gamma -= (.005 * timestep);
               }
            if (gamma < 180)
               {
               gamma = 180;
               }
-           theta = 0; 
+           theta = 0;
            }
         if (Durability > 0)
             {
@@ -562,15 +564,15 @@ void DynamicObj::crashGround (Uint32 dt)
                 setBlackSmoke (1.2, 30 * timestep);
                 }
             }
-        float decfac = 200.0F; 
+        float decfac = 200.0F;
         if (realism && this == (DynamicObj *) fplayer && game == GAME_PLAY)
-            { 
+            {
             OnTheGround = true;
             if (fplayer->realspeed < (fplayer->StallSpeed * 1.0))
-               { 
+               {
                if (gamma < 174.0 && !NoseWheelDamageInflicted)
-                  { 
-                  Durability -= ((fplayer->realspeed * decfac * dt / timestep) * 7); 
+                  {
+                  Durability -= ((fplayer->realspeed * decfac * dt / timestep) * 7);
                   NoseWheelDamageInflicted = true;
                   }
                float height2 = tl->y - l->getExactHeight (tl->x+1, tl->z);
@@ -581,34 +583,35 @@ void DynamicObj::crashGround (Uint32 dt)
                float diff2 = (fabs)(height3 - height4);
                float diff3 = (fabs)(height4 - height5);
                if (diff1 < 0.4 && diff2 < 0.4 && diff3 < 0.4)
-                  { 
-                  
+                  {
+
                   if (fabs(l->getExactHeight(tl->x, tl->z) + SeaLevel) < 0.1)
-                     { 
+                     {
                      if (!OceanCrashSounded)
                         {
                         sound->setVolume (SOUND_CRASHOCEAN00, 90);
                         sound->play (SOUND_CRASHOCEAN00, false);
-                        Durability -= ((fplayer->realspeed * decfac * dt / timestep) * 15.0); 
+
+                        Durability -= ((fplayer->realspeed * decfac * dt / timestep) * 15.0);
                         if (fplayer->UndercarriageLevel)
-                           { 
-                           Durability -= ((fplayer->realspeed * decfac * dt / timestep) * 9.0); 
+                           {
+                           Durability -= ((fplayer->realspeed * decfac * dt / timestep) * 9.0);
                            }
                         OceanCrashSounded = true;
                         }
                      }
                   else if (fplayer->UndercarriageLevel)
-                     { 
+                     {
                      float PlayerAlt;
                      float RunwayAlt;
                      PlayerAlt = fabs(l->getExactHeight(tl->x, tl->z));
                      RunwayAlt = fabs(l->getExactHeight(AirfieldXMin+1, AirfieldYMin+2));
                      if (PlayerAlt == RunwayAlt && (fabs(fplayer->theta)) < 5.0)
-                        { 
-                        Durability -= 0; 
+                        {
+                        Durability -= 0;
                         if (fplayer->thrust < 0.01)
                            {
-                           
+
                            ClearSpeedHistoryArrayFlag = true;
                            fplayer->realspeed = 0.0;
                            fplayer->thrust *= 0.1;
@@ -627,20 +630,20 @@ void DynamicObj::crashGround (Uint32 dt)
                                                     fplayer->id == BOMBER_LANCASTER
                                                     )
                            )
-                           { 
-                           LandedAtSafeSpeed = true; 
+                           {
+                           LandedAtSafeSpeed = true;
                            UpdateOnlineScoreLogFileWithLandings();
-                           
+
                            if (TakeoffLogged == true)
                               {
                               TakeoffLogged = false;
                               }
                            }
                         else if (TrueAirSpeed < 3.5)
-                           { 
-                           LandedAtSafeSpeed = true; 
+                           {
+                           LandedAtSafeSpeed = true;
                            UpdateOnlineScoreLogFileWithLandings();
-                           
+
                            if (TakeoffLogged == true)
                               {
                               TakeoffLogged = false;
@@ -654,14 +657,14 @@ void DynamicObj::crashGround (Uint32 dt)
                            }
                         }
                      if ((fabs(fplayer->theta)) > 10.0 && (fplayer->realspeed > 0.03 && !LandedAtSafeSpeed))
-                        { 
+                        {
                         Durability =- 15;
                         fplayer->theta = 0;
                         sound->setVolume (SOUND_BELLYSCRAPE00, 90);
                         sound->play (SOUND_BELLYSCRAPE00, false);
                         }
                      else
-                        { 
+                        {
                         if (!WheelRolloutSounded)
                            {
                            sound->setVolume (SOUND_WHEELROLLOUT00, 90);
@@ -671,7 +674,7 @@ void DynamicObj::crashGround (Uint32 dt)
                         }
                      }
                   else
-                     { 
+                     {
                      if (!BellyScrapeSounded)
                         {
                         sound->setVolume (SOUND_BELLYSCRAPE00, 90);
@@ -680,19 +683,19 @@ void DynamicObj::crashGround (Uint32 dt)
                         }
                      if (!GearUpDamageAlreadyInflicted)
                         {
-                        Durability -= fplayer->realspeed * decfac * dt / timestep;; 
-                        GearUpDamageAlreadyInflicted = true; 
+                        Durability -= fplayer->realspeed * decfac * dt / timestep;;
+                        GearUpDamageAlreadyInflicted = true;
                         }
                      if (fplayer->gamma > 2)
-                        { 
+                        {
                         fplayer->gamma -=0.5;
                         }
-                     
+
                      }
                   }
                else
-                  { 
-                  
+                  {
+
                   Durability -= fplayer->realspeed * decfac * dt / timestep;
                   if (!LandingDamageSounded)
                      {
@@ -703,10 +706,10 @@ void DynamicObj::crashGround (Uint32 dt)
                   }
                }
             else
-               { 
-               
+               {
+
                if (!LandedAtSafeSpeed)
-                  { 
+                  {
                   Durability -= fplayer->realspeed * decfac * dt / timestep;
                   if (!LandingDamageSounded)
                      {
@@ -716,25 +719,26 @@ void DynamicObj::crashGround (Uint32 dt)
                      }
                   }
                if (Durability < 0.5)
-                  { 
+                  {
                   setExplosion (0.2, 25 * timestep);
                   setBlackSmoke (0.5, 25 * timestep);
-                  UpdateOnlineScoreLogFileWithCrashes(); 
+                  UpdateOnlineScoreLogFileWithCrashes();
+                  std::cout << "You crashed into the ocean---------------------------------------------------------------------------------------" << std::endl;
                   }
                }
             }
 
         else
-            { 
-            
+            {
+
             if (id == BOMB01)
-               { 
+               {
                Durability -= decfac * dt / timestep;
                }
             if (realspeed > 0.33)
-               { 
+               {
                if (id != BOMB01)
-                  { 
+                  {
                   Durability -= decfac * dt / timestep;
                   }
                   if (Durability < 0 && (id >= FIGHTER1 && id <= FIGHTER2))
@@ -749,17 +753,17 @@ void DynamicObj::crashGround (Uint32 dt)
         }
 
     else
-       { 
+       {
        if (this == (DynamicObj *) fplayer && height > zoom + 1)
-          { 
+          {
           OnTheGround = false;
           if (LandedAtSafeSpeed)
-             { 
+             {
              UpdateOnlineScoreLogFileWithTakeoffs();
              }
-          LandedAtSafeSpeed = false; 
-          
-          LandingLogged = false; 
+          LandedAtSafeSpeed = false;
+
+          LandingLogged = false;
           GearUpDamageAlreadyInflicted = false;
           NoseWheelDamageInflicted = false;
           TireSqueakSounded = false;
@@ -769,16 +773,16 @@ void DynamicObj::crashGround (Uint32 dt)
           WheelRolloutSounded = false;
           }
        }
-    } 
+    }
 
 // check for collision, simplified model, each model is surrounded by a cube
 // this works pretty well, but we must use more than one model for complex models or scenes
 void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (laser, missile)
     {
-    
+
     if (immunity > 0 || d->immunity > 0)
         {
-        return;    
+        return;
         }
 
     if (explode > 0 || sink > 0)
@@ -795,36 +799,36 @@ void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (las
         collide = true;
         }
     if (collide)
-        { 
+        {
         if (id == STATIC_AIRFIELD00)
-           { 
+           {
            if (d->id > FIGHTER1 && d->id < FIGHTER2)
-              { 
+              {
               if (
                  tl->x + 1 >= d->tl->x - 1 && tl->x - 1 <= d->tl->x + 1 &&
                  tl->y + 1 >= d->tl->y - 1 && tl->y - 1 <= d->tl->y + 1 &&
                  tl->z + 1 >= d->tl->z - 1 && tl->z - 1 <= d->tl->z + 1
                  )
-                    { 
+                    {
                     if (d == (DynamicObj *) fplayer)
-                       { 
-                       fplayer->Durability -= 4.0F; 
+                       {
+                       fplayer->Durability -= 4.0F;
                        }
                     }
               else
-                    { 
-                    return; 
+                    {
+                    return;
                     }
               }
            else if (d->id == BOMB01)
-              { 
-              d->Durability -= 30000.0; 
-              DamageInNetQueue = 30000.0; 
+              {
+              d->Durability -= 30000.0;
+              DamageInNetQueue = 30000.0;
               }
            else if (d->id == MISSILE_DF1)
-              { 
-              d->Durability -= 3400; 
-              DamageInNetQueue = 3400.0; 
+              {
+              d->Durability -= 3400;
+              DamageInNetQueue = 3400.0;
               }
            }
         if (this == (DynamicObj *) fplayer && game == GAME_PLAY && realism && d->id >= AIR && d->id < MOVING_GROUND)
@@ -835,7 +839,7 @@ void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (las
 
         if (id < STATIC_PASSIVE || (id >= STATIC_PASSIVE && d->id >= MISSILE1 && d->id <= MISSILE2))
             {
-            Durability -= (float) d->impact; 
+            Durability -= (float) d->impact;
             }
         if (d->id == CANNON1)
            {
@@ -850,7 +854,7 @@ void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (las
            if (d->source == (DynamicObj *) fplayer)
               { // player is shooting his own team
               if (id == STATIC_AIRFIELD00)
-                 { 
+                 {
                  //sprintf (SystemMessageBufferA, "YOU ARE SHOOTING YOUR OWN AIRFIELD!");
                  //NewSystemMessageNeedsScrolling = true;
                  //fplayer->Durability -= 0.02;
@@ -862,19 +866,19 @@ void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (las
            DamageInNetQueue += fplayer->statLethality * 0.4;
            }
         if (d->source != NULL && active)   // only for missiles/cannons
-            { 
+            {
             if (Durability <= 0)
-                { 
+                {
                 if (active && draw && !killed)
                    {
                    if (d->source->id >= FIGHTER1 && d->source->id <= FIGHTER2)
-                       { 
+                       {
                        killed = true;
-                       DamageInNetQueue = 50000; 
+                       DamageInNetQueue = 50000;
                        if (id >= FIGHTER1 && id <= FIGHTER2)
                            {
                            d->source->fighterkills ++;
-                           
+
                            RecentVictim = id;
                            RecentVictimAltitude = tl->y;
                            RecentVictimXPosition = tl->x;
@@ -882,7 +886,7 @@ void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (las
                            RecentVictimGamma = gamma;
                            RecentVictimPhi = phi;
                            RecentVictimTheta = theta;
-                           RecentVictimVelocity = realspeed * 0.8; 
+                           RecentVictimVelocity = realspeed * 0.8;
                            }
                        else if (id >= SHIP1 && id <= SHIP2)
                            {
@@ -900,11 +904,11 @@ void DynamicObj::collide (DynamicObj *d, Uint32 dt) // d must be the medium (las
                    }
                 }
             }
-
+        std::cout << "You crashed from a collision---------------------------------------------------------------------------------------" << std::endl;
         setExplosion (0.2, 20 * timestep);
         setBlackSmoke (0.5, 30 * timestep);
         }
-    } 
+    }
 
 void DynamicObj::setExplosion (float maxzoom, int len)
     {
@@ -922,16 +926,16 @@ void DynamicObj::setExplosion (float maxzoom, int len)
         i = 0;
         }
     if (id >= CANNON1 && id <= CANNON2)
-       { 
-       
+       {
+
        explosion [i]->setExplosion (tl->x, tl->y+1.0, tl->z, forcex, forcey, forcez, maxzoom/2, len);
        }
     else if (id == MISSILE_DF1)
-       { 
+       {
        explosion [i]->setExplosion (tl->x, tl->y, tl->z, forcex, forcey, forcez, tl->y * 0.4, len);
        }
     else if (id == BOMB01)
-       { 
+       {
        explosion [i]->setExplosion (tl->x, tl->y, tl->z, forcex, forcey, forcez, tl->y * 0.9, len);
        }
     else if (id == STATIC_AIRFIELD00)
@@ -942,7 +946,7 @@ void DynamicObj::setExplosion (float maxzoom, int len)
        {
        explosion [i]->setExplosion (tl->x, tl->y, tl->z, forcex, forcey, forcez, maxzoom, len);
        }
-    } 
+    }
 
 void DynamicObj::setBlackSmoke (float maxzoom, int len)
     {
@@ -960,7 +964,7 @@ void DynamicObj::setBlackSmoke (float maxzoom, int len)
         }
 
     blacksmoke [i]->setBlackSmoke (tl->x, tl->y, tl->z, phi, maxzoom, len);
-    } 
+    }
 
 // return heading difference towards enemy
 int DynamicObj::getAngle (DynamicObj *o)
@@ -1013,7 +1017,7 @@ int DynamicObj::getAngleH (DynamicObj *o)
 bool DynamicObj::checkLooping ()
     {
     if (gamma > 270)
-        { 
+        {
         gamma = 540 - gamma;
         theta += 180;
         phi += 180;
@@ -1033,7 +1037,7 @@ bool DynamicObj::checkLooping ()
             {
             phi -= 360;
             }
-        return true; 
+        return true;
         }
     else if (gamma < 90)
         {
@@ -1056,9 +1060,9 @@ bool DynamicObj::checkLooping ()
             {
             phi -= 360;
             }
-        return true; 
+        return true;
         }
-    return false; 
+    return false;
     } // end DynamicObj::checkLooping ()
 
 void DynamicObj::move (Uint32 dt)
@@ -1075,13 +1079,13 @@ void DynamicObj::move (Uint32 dt)
        {
        CalculateTrueAirspeed();
        }
-    
+
     if (ViewResetTimer >0)
-       { 
-       ViewResetTimer += dt; 
+       {
+       ViewResetTimer += dt;
        if (ViewResetTimer > 2000)
-          { 
-          view = ConfiguredViewDistance; 
+          {
+          view = ConfiguredViewDistance;
           ViewResetTimer = 0;
           }
        }
@@ -1110,15 +1114,15 @@ void DynamicObj::move (Uint32 dt)
        float RunwayAlt;
        RunwayAlt = fabs(l->getExactHeight(AirfieldXMin+1, AirfieldYMin+2));
        if (tl->y < (RunwayAlt + 1))
-          { 
+          {
           if (ExplosionSoundCommenced == false)
-             { 
+             {
              float Xdistance;
              float Zdistance;
              float XZdistance;
              Xdistance = (fabs)(fplayer->tl->x - tl->x);
              Zdistance = (fabs)(fplayer->tl->z - tl->z);
-             XZdistance = (Xdistance + Zdistance) * 1.5; 
+             XZdistance = (Xdistance + Zdistance) * 1.5;
              if (XZdistance > 126)
                 {
                 XZdistance = 126;
@@ -1144,7 +1148,7 @@ void DynamicObj::move (Uint32 dt)
        static bool ExplosionSoundCommenced;
        static int ExplosionIntervalTimer = 0;
        MostRecentBombFlightTimer += dt;
-       recgamma -= dt/15; 
+       recgamma -= dt/15;
        gamma -= dt/15;
        if (recgamma < 109)
           {
@@ -1157,15 +1161,15 @@ void DynamicObj::move (Uint32 dt)
        float RunwayAlt;
        RunwayAlt = fabs(l->getExactHeight(AirfieldXMin+1, AirfieldYMin+2));
        if (tl->y < (RunwayAlt + 1))
-          { 
+          {
           if (ExplosionSoundCommenced == false)
-             { 
+             {
              float Xdistance;
              float Zdistance;
              float XZdistance;
              Xdistance = (fabs)(fplayer->tl->x - tl->x);
              Zdistance = (fabs)(fplayer->tl->z - tl->z);
-             XZdistance = (Xdistance + Zdistance) * 2; 
+             XZdistance = (Xdistance + Zdistance) * 2;
              if (XZdistance > 126)
                 {
                 XZdistance = 126;
@@ -1215,11 +1219,11 @@ void DynamicObj::move (Uint32 dt)
         {
         vz = -1;
         }
-    
+
     if (maxthrust + thrust <= -0.00001 || maxthrust + thrust >= 0.00001)
-        { 
+        {
         float DegreesToRadiansFactor = -0.01745333;
-        
+
         phi += vz * SIN(theta) * elevatoreffect * manoeverability * (3.33 + 15.0 * realspeed) * timefac;
         gamma += COS(theta) * elevatoreffect * manoeverability * (3.33 + 15.0 * realspeed) * timefac;
         phi += -vz * COS(theta) * ruddereffect * manoeverability * (0.66 + 3.0 * realspeed) * timefac;
@@ -1253,19 +1257,19 @@ void DynamicObj::move (Uint32 dt)
         {
         recthrust = maxthrust;
         }
-    float throttlechange = maxthrust / 100 * timefac; 
-    if (recthrust > thrust + throttlechange)   
-        { 
-        thrust += (throttlechange * 2); 
+    float throttlechange = maxthrust / 100 * timefac;
+    if (recthrust > thrust + throttlechange)
+        {
+        thrust += (throttlechange * 2);
         }
     else if (recthrust < thrust - throttlechange )
-        { 
-        thrust -= (throttlechange / 2);  
+        {
+        thrust -= (throttlechange / 2);
         }
 
     if ( party == 0 && NetworkOpponent && (MissionNumber == MISSION_HEADTOHEAD00))
-    { 
-    
+    {
+
     ThreeDObjects[MissionHeadToHead00State]->realspeed = InPacket.UdpObjSpeed;
     ThreeDObjects[MissionHeadToHead00State]->thrust = InPacket.UdpObjThrust;
     ThreeDObjects[MissionHeadToHead00State]->recthrust = InPacket.UdpObjThrust;
@@ -1279,7 +1283,7 @@ void DynamicObj::move (Uint32 dt)
     float gravityforce;
 
     if (id <= CANNON2)
-        {  
+        {
         tl->x += forcex * timefac; // add our vector to the translation
         tl->z += forcez * timefac;
         tl->y += forcey * timefac;
@@ -1290,12 +1294,12 @@ void DynamicObj::move (Uint32 dt)
 
     if (realism)
         {
-        
+
         gammaup = gamma + 90;
         thetaup = -theta;
         phiup = phi;
         uaxis.set (COS(gammaup) * SIN(phiup), SIN(gammaup), COS(gammaup) * COS(phiup)); // upward axis (theta = 0)
-        
+
         utemp.take (&uaxis);
         utemp.mul (COS(thetaup));
         utemp2.take (&vaxis);
@@ -1306,10 +1310,10 @@ void DynamicObj::move (Uint32 dt)
         utemp.add (&utemp2);
         utemp.add (&utemp3);
         uaxis.take (&utemp);
-        
+
         braking = (fabs (ruddereffect * 20.0) + fabs (elevatoreffect * 35.0) + fabs (rolleffect * 18.0) + fplayer->DragEffect)/200;
         brakepower = pow (0.93 - braking, timefac);
-        
+
         accx *= brakepower;
         accy *= brakepower;
         accz *= brakepower;
@@ -1317,17 +1321,17 @@ void DynamicObj::move (Uint32 dt)
         accz += thrust * vaxis.z * 0.3 * timefac;
         accx += thrust * vaxis.x * 0.3 * timefac;
         accy -= thrust * vaxis.y * 0.1 * timefac;
-        
+
         accz += thrust * uaxis.z * 0.067 * timefac;
         accx += thrust * uaxis.x * 0.067 * timefac;
         accy -= thrust * uaxis.y * 0.067 * timefac * cos((fplayer->theta) * DegreesToRadiansFactor);
-        
+
         accy -= 0.015 * timefac;
-        
+
         accy -= fplayer->deadweight * timefac;
-        
+
         accy += sin((gamma - 180)* DegreesToRadiansFactor) * ((fplayer->InertiallyDampenedPlayerSpeed)/ 0.4 ); // was 0.8
-        
+
         accx -= sin(fplayer->phi * DegreesToRadiansFactor) * ((fplayer->realspeed)/5);
         accz -= cos(fplayer->phi * DegreesToRadiansFactor) * ((fplayer->realspeed)/5);
         float stepfac = 0.24;
@@ -1338,12 +1342,12 @@ void DynamicObj::move (Uint32 dt)
         forcex = accx * stepfac * scalef;
         forcey = accy * stepfac * scalef;
         forcez = accz * stepfac * scalef;
-        
-        gravityforce = sqrt (realspeed) * vaxis.y * 1.10 * timefac; 
+
+        gravityforce = sqrt (realspeed) * vaxis.y * 1.10 * timefac;
         forcez += gravityforce * vaxis.z;
         forcex += gravityforce * vaxis.x;
         forcey += gravityforce * vaxis.y;
-        
+
         forcey -= gravityforce * vaxis.y * 2.2;
         }
     stop = false;
@@ -1365,14 +1369,14 @@ void DynamicObj::move (Uint32 dt)
     //
     //  InertiaEffects
     //
-    
+
     InertiaTimer += DeltaTime;
-    
+
     unsigned static char InertiaPhase;
-    
+
     if (InertiaTimer < (1000 * inertia))
        {
-       InertiaPhase = 0; 
+       InertiaPhase = 0;
        }
     else if (InertiaTimer < (2000 * inertia))
        {
@@ -1410,9 +1414,9 @@ void DynamicObj::move (Uint32 dt)
        {
        InertiaPhase = 9; // Last of 10 phases is phase "9".
        }
-    
+
     SpeedHistoryArray[InertiaPhase] = (fplayer->realspeed);
-    
+
     if (RecoveredFromStall)
        {
        for (HistoryArrayPointer=0; HistoryArrayPointer<=9; HistoryArrayPointer++)
@@ -1421,7 +1425,7 @@ void DynamicObj::move (Uint32 dt)
           RecoveredFromStall = false;
           }
        }
-    
+
     if (ClearSpeedHistoryArrayFlag)
        {
        for (HistoryArrayPointer=0; HistoryArrayPointer<=9; HistoryArrayPointer++)
@@ -1430,14 +1434,14 @@ void DynamicObj::move (Uint32 dt)
           ClearSpeedHistoryArrayFlag = false;
           }
        }
-    
+
     for (HistoryArrayPointer=0; HistoryArrayPointer<=9; HistoryArrayPointer++)
         {
         SpeedHistoryAccumulator += SpeedHistoryArray[HistoryArrayPointer];
         }
-    
-    InertiallyDampenedPlayerSpeed =  SpeedHistoryAccumulator / 10; 
-    
+
+    InertiallyDampenedPlayerSpeed =  SpeedHistoryAccumulator / 10;
+
     if (InertiaTimer > (int)(10000.0 * inertia))
         {
         InertiaTimer = 0;
@@ -1449,7 +1453,7 @@ void DynamicObj::move (Uint32 dt)
        forcex /= AirDensityDrag;
        forcey /= AirDensityDrag;
        forcez /= AirDensityDrag;
-       
+
        TestForExcessGamma();
        forcex /= GammaDrag;
        forcey /= GammaDrag;
@@ -1498,7 +1502,7 @@ void DynamicObj::move (Uint32 dt)
 
     if (!fplayer->ai)
         {
-        
+
         realspeed = (realspeed + InertiallyDampenedPlayerSpeed)/2;
         TestForWindNoise();
         }
@@ -1528,7 +1532,7 @@ cannondone:
 
     if (ttl > 0)
         {
-        ttl -= dt; 
+        ttl -= dt;
 
         if (ttl <= 0)
             {
@@ -1550,9 +1554,9 @@ cannondone:
 
     if (immunity > 0)
         {
-        immunity -= dt;    
+        immunity -= dt;
         }
-    } 
+    }
 
 void AIObj::aiinit ()
     {
@@ -1665,8 +1669,8 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
        {
        o->cubex *= 90.0;
        o->cubey *= 4.0;
-       o->cubez *= 28.0; 
-       maxDurability = 1530000;  
+       o->cubez *= 28.0;
+       maxDurability = 1530000;
        Durability = 1530000;
        }
 
@@ -1684,7 +1688,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
        Durability = 65000;
        o->cubex *= 6.0;
        o->cubey *= 1.0;
-       o->cubez *= 5.0; 
+       o->cubez *= 5.0;
        }
 
     if (id == FIGHTER_P38L)
@@ -1716,17 +1720,17 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=1600;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=8000;
         SpeedBrakePower=1.01;
-        MaxFullPowerAltRatio = 0.77; 
-        inertia = 0.38; 
+        MaxFullPowerAltRatio = 0.77;
+        inertia = 0.38;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
         CompressibilitySpeedWithSpeedBrakes = 0.33; // Replaces above setting when SpeedBrakes are active.
@@ -1736,7 +1740,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.095;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == FIGHTER_FIATG55)
         {
@@ -1767,7 +1771,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 600;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .111;
         FlapsLevelElevatorEffect0=0;
@@ -1787,7 +1791,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 840;
-        } 
+        }
 
     if (id == FIGHTER_A6M2)
         {
@@ -1818,7 +1822,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 300;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 110.0; 
+        StaticDrag = 110.0;
         ClipDistance = 0.03;
         FlapSpeed = .111;
         FlapsLevelElevatorEffect0=0;
@@ -1827,7 +1831,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         FlapsLevelElevatorEffect3=2400;
         FlapsLevelElevatorEffect4=2400;
         SpeedBrakePower=1.0;
-        MaxFullPowerAltRatio = 0.47; 
+        MaxFullPowerAltRatio = 0.47;
         inertia = .255;
         deadweight = 0.07;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active.
@@ -1838,7 +1842,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.09;
         ServiceCeilingAltitude = 750;
-        } 
+        }
 
     if (id == FIGHTER_KI43)
         {
@@ -1869,7 +1873,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 280;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 110.0; 
+        StaticDrag = 110.0;
         ClipDistance = 0.03;
         FlapSpeed = .111;
         FlapsLevelElevatorEffect0=0;
@@ -1878,7 +1882,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         FlapsLevelElevatorEffect3=2400;
         FlapsLevelElevatorEffect4=2400;
         SpeedBrakePower=1.0;
-        MaxFullPowerAltRatio = 0.49; 
+        MaxFullPowerAltRatio = 0.49;
         inertia = .25;
         deadweight = 0.06;
         CompressibilitySpeed = 0.23; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active.
@@ -1889,7 +1893,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.09;
         ServiceCeilingAltitude = 730;
-        } 
+        }
 
     if (id == FIGHTER_IL16)
         {
@@ -1920,7 +1924,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 300;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 110.0; 
+        StaticDrag = 110.0;
         ClipDistance = 0.04;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -1929,7 +1933,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         FlapsLevelElevatorEffect3=2400;
         FlapsLevelElevatorEffect4=2400;
         SpeedBrakePower=1.0;
-        MaxFullPowerAltRatio = 0.48; 
+        MaxFullPowerAltRatio = 0.48;
         inertia = .31;
         deadweight = 0.07;
         CompressibilitySpeed = 0.24; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active.
@@ -1940,7 +1944,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == FIGHTER_F4F)
         {
@@ -1971,7 +1975,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -1991,7 +1995,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == FIGHTER_F6F)
         {
@@ -2000,7 +2004,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac;
         HistoricPeriod = 2;
         DefensiveLethality = 0;
-        maxthrust = 1.72; 
+        maxthrust = 1.72;
         RollRate = 0.64;
         manoeverability = 0.21;
         maxDurability = 90;
@@ -2022,7 +2026,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2042,7 +2046,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == FIGHTER_F4U)
         {
@@ -2073,7 +2077,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2093,7 +2097,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 730;
-        } 
+        }
 
     if (id == FIGHTER_P47D)
         {
@@ -2124,7 +2128,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1150;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.04;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2144,7 +2148,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == FIGHTER_FW190)
         {
@@ -2175,7 +2179,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -2195,7 +2199,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.105;
         ServiceCeilingAltitude = 640;
-        } 
+        }
 
     if (id == FIGHTER_P51D)
         {
@@ -2226,7 +2230,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 106.9; 
+        StaticDrag = 106.9;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2246,7 +2250,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 733;
-        } 
+        }
 
     else if (id == FIGHTER_HAWK)
         {
@@ -2277,7 +2281,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 94.0; 
+        StaticDrag = 94.0;
         ClipDistance = 0.03;
         FlapSpeed = .166;
         FlapsLevelElevatorEffect0=0;
@@ -2297,7 +2301,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.115;
         ServiceCeilingAltitude = 1000;
-        } 
+        }
 
     else if (id == BOMBER_B17)
         {
@@ -2306,7 +2310,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac * 2;
         HistoricPeriod = 1;
         DefensiveLethality = 39;
-        maxthrust = 1.465; 
+        maxthrust = 1.465;
         RollRate = 0.28;
         manoeverability = 0.13;
         maxDurability = 700;
@@ -2328,7 +2332,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2348,7 +2352,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 680;
-        } 
+        }
 
     else if (id == BOMBER_B24)
         {
@@ -2379,7 +2383,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2399,7 +2403,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 550;
-        } 
+        }
 
     else if (id == FIGHTER_SPIT9)
         {
@@ -2430,7 +2434,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 700;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -2450,7 +2454,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 840;
-        } 
+        }
 
     else if (id == FIGHTER_ME109G)
         {
@@ -2481,7 +2485,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 500;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 110.0; 
+        StaticDrag = 110.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -2501,7 +2505,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.106;
         ServiceCeilingAltitude = 760;
-        } 
+        }
 
     else if (id == FIGHTER_HURRICANE)
         {
@@ -2532,7 +2536,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -2552,7 +2556,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.101;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     else if (id == FIGHTER_P40)
         {
@@ -2583,7 +2587,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 700;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2603,7 +2607,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.104;
         ServiceCeilingAltitude = 680;
-        } 
+        }
 
     else if (id == FIGHTER_P39)
         {
@@ -2634,7 +2638,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 700;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2654,7 +2658,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.104;
         ServiceCeilingAltitude = 680;
-        } 
+        }
 
     else if (id == FIGHTER_YAK9)
         {
@@ -2685,7 +2689,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 700;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -2705,7 +2709,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.104;
         ServiceCeilingAltitude = 660;
-        } 
+        }
 
     else if (id == FIGHTER_N1K1)
         {
@@ -2736,7 +2740,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 117.0; 
+        StaticDrag = 117.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -2756,7 +2760,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.103;
         ServiceCeilingAltitude = 680;
-        } 
+        }
 
     if (id == BOMBER_JU87)
         {
@@ -2765,7 +2769,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac * 1.2;
         HistoricPeriod = 1;
         DefensiveLethality = 6;
-        maxthrust = 1.43; 
+        maxthrust = 1.43;
         RollRate = 0.25;
         manoeverability = 0.15;
         maxDurability = 330;
@@ -2787,7 +2791,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2807,7 +2811,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_G5M)
         {
@@ -2816,7 +2820,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac * 1.6;
         HistoricPeriod = 1;
         DefensiveLethality = 10;
-        maxthrust = 1.43; 
+        maxthrust = 1.43;
         RollRate = 0.25;
         manoeverability = 0.15;
         maxDurability = 55;
@@ -2838,7 +2842,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .111;
         FlapsLevelElevatorEffect0=0;
@@ -2858,7 +2862,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_B25)
         {
@@ -2867,7 +2871,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac * 1.4;
         HistoricPeriod = 2;
         DefensiveLethality = 12;
-        maxthrust = 1.48; 
+        maxthrust = 1.48;
         RollRate = 0.26;
         manoeverability = 0.17;
         maxDurability = 170;
@@ -2889,7 +2893,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2909,7 +2913,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_B26)
         {
@@ -2918,7 +2922,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac * 1.4;
         HistoricPeriod = 1;
         DefensiveLethality = 12;
-        maxthrust = 1.43; 
+        maxthrust = 1.43;
         RollRate = 0.26;
         manoeverability = 0.17;
         maxDurability = 170;
@@ -2940,7 +2944,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -2960,7 +2964,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == FIGHTER_LA5)
         {
@@ -2991,7 +2995,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -3011,7 +3015,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.105;
         ServiceCeilingAltitude = 640;
-        } 
+        }
 
     if (id == FIGHTER_LA7)
         {
@@ -3042,7 +3046,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -3062,7 +3066,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.105;
         ServiceCeilingAltitude = 640;
-        } 
+        }
 
     if (id == FIGHTER_IL2)
         {
@@ -3071,7 +3075,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac;
         HistoricPeriod = 2;
         DefensiveLethality = 3;
-        maxthrust = 1.45; 
+        maxthrust = 1.45;
         RollRate = 0.67;
         manoeverability = 0.15;
         maxDurability = 90;
@@ -3093,7 +3097,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3113,7 +3117,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.105;
         ServiceCeilingAltitude = 640;
-        } 
+        }
 
     if (id == FIGHTER_MACCIC202)
         {
@@ -3144,16 +3148,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .122; 
+        FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=3200;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=3200;
         SpeedBrakePower=1.00;
-        MaxFullPowerAltRatio = 0.72; 
+        MaxFullPowerAltRatio = 0.72;
         inertia = 0.36;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -3164,7 +3168,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.095;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == BOMBER_LANCASTER)
         {
@@ -3195,7 +3199,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3215,7 +3219,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 680;
-        } 
+        }
 
     if (id == BOMBER_MOSQUITOB)
         {
@@ -3246,16 +3250,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=2600;
         FlapsLevelElevatorEffect3=2600;
         FlapsLevelElevatorEffect4=2600;
         SpeedBrakePower=1.00;
-        MaxFullPowerAltRatio = 0.70; 
+        MaxFullPowerAltRatio = 0.70;
         inertia = 0.376;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -3266,7 +3270,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.097;
         ServiceCeilingAltitude = 810;
-        } 
+        }
 
     if (id == FIGHTER_TYPHOON)
         {
@@ -3297,16 +3301,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=1600;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=8000;
         SpeedBrakePower=1.01;
-        MaxFullPowerAltRatio = 0.77; 
+        MaxFullPowerAltRatio = 0.77;
         inertia = 0.377;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -3317,7 +3321,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.095;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == FIGHTER_YAK1)
         {
@@ -3348,7 +3352,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 700;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 105.0; 
+        StaticDrag = 105.0;
         ClipDistance = 0.03;
         FlapSpeed = .111;
         FlapsLevelElevatorEffect0=0;
@@ -3368,7 +3372,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.100;
         ServiceCeilingAltitude = 550;
-        } 
+        }
 
     if (id == BOMBER_B29)
         {
@@ -3399,7 +3403,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3419,7 +3423,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 550;
-        } 
+        }
 
     if (id == FIGHTER_DW520)
         {
@@ -3450,7 +3454,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3470,7 +3474,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == BOMBER_SB2C)
         {
@@ -3501,7 +3505,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3521,7 +3525,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_TBF)
         {
@@ -3552,7 +3556,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3572,7 +3576,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == FIGHTER_ME163)
         {
@@ -3603,16 +3607,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=2400;
         FlapsLevelElevatorEffect2=3600;
         FlapsLevelElevatorEffect3=3600;
         FlapsLevelElevatorEffect4=3600;
         SpeedBrakePower=1.1;
-        MaxFullPowerAltRatio = 1.00; 
+        MaxFullPowerAltRatio = 1.00;
         inertia = 0.375;
         deadweight = 0.13;
         CompressibilitySpeed = 0.36; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -3623,7 +3627,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.090;
         ServiceCeilingAltitude = 920;
-        } 
+        }
 
     if (id == FIGHTER_TEMPEST)
         {
@@ -3654,16 +3658,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=1600;
         FlapsLevelElevatorEffect2=3200;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=3200;
         SpeedBrakePower=1.00;
-        MaxFullPowerAltRatio = 0.55; 
+        MaxFullPowerAltRatio = 0.55;
         inertia = 0.33;
         deadweight = 0.13;
         CompressibilitySpeed = 0.28; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -3674,7 +3678,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.110;
         ServiceCeilingAltitude = 650;
-        } 
+        }
 
     if (id == FIGHTER_D3A)
         {
@@ -3705,7 +3709,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3725,7 +3729,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.08;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_B5N)
         {
@@ -3756,7 +3760,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3776,7 +3780,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_DAUNTLESS)
         {
@@ -3807,7 +3811,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3827,7 +3831,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == FIGHTER_ME110)
         {
@@ -3858,7 +3862,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3878,7 +3882,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == BOMBER_DORNIER)
         {
@@ -3909,7 +3913,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3929,7 +3933,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_HE111)
         {
@@ -3960,7 +3964,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -3980,7 +3984,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == BOMBER_JU88)
         {
@@ -4011,7 +4015,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -4031,7 +4035,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.11;
         ServiceCeilingAltitude = 513;
-        } 
+        }
 
     if (id == FIGHTER_KI84)
         {
@@ -4062,16 +4066,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=1600;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=8000;
         SpeedBrakePower=1.01;
-        MaxFullPowerAltRatio = 0.70; 
+        MaxFullPowerAltRatio = 0.70;
         inertia = 0.375;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -4082,7 +4086,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.095;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == FIGHTER_KI61)
         {
@@ -4091,7 +4095,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         o->cubez = zoom * cubefac;
         HistoricPeriod = 2;
         DefensiveLethality = 0;
-        maxthrust = 1.70; 
+        maxthrust = 1.70;
         RollRate = 0.62;
         manoeverability = 0.21;
         maxDurability = 80;
@@ -4113,7 +4117,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 800;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -4133,7 +4137,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 713;
-        } 
+        }
 
     if (id == FIGHTER_GENERIC01)
         {
@@ -4164,16 +4168,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=1600;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=8000;
         SpeedBrakePower=1.01;
-        MaxFullPowerAltRatio = 0.77; 
+        MaxFullPowerAltRatio = 0.77;
         inertia = 0.375;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -4184,7 +4188,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.095;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == FIGHTER_A6M5)
         {
@@ -4215,7 +4219,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 300;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 110.0; 
+        StaticDrag = 110.0;
         ClipDistance = 0.03;
         FlapSpeed = .111;
         FlapsLevelElevatorEffect0=0;
@@ -4224,7 +4228,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         FlapsLevelElevatorEffect3=2400;
         FlapsLevelElevatorEffect4=2400;
         SpeedBrakePower=1.0;
-        MaxFullPowerAltRatio = 0.47; 
+        MaxFullPowerAltRatio = 0.47;
         inertia = .26;
         deadweight = 0.07;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active.
@@ -4235,7 +4239,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = false;
         StallSpeed = 0.09;
         ServiceCeilingAltitude = 750;
-        } 
+        }
 
     if (id == FIGHTER_SPIT5)
         {
@@ -4266,7 +4270,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 700;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 108.0; 
+        StaticDrag = 108.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -4286,7 +4290,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.09;
         ServiceCeilingAltitude = 800;
-        } 
+        }
 
     if (id == FIGHTER_P51B)
         {
@@ -4317,7 +4321,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 750;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 106.9; 
+        StaticDrag = 106.9;
         ClipDistance = 0.03;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -4337,7 +4341,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 733;
-        } 
+        }
 
     if (id == FIGHTER_P47B)
         {
@@ -4368,7 +4372,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1150;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 107.0; 
+        StaticDrag = 107.0;
         ClipDistance = 0.04;
         FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
@@ -4388,7 +4392,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 880;
-        } 
+        }
 
     if (id == FIGHTER_ME109F)
         {
@@ -4419,7 +4423,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 500;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 110.0; 
+        StaticDrag = 110.0;
         ClipDistance = 0.03;
         FlapSpeed = .122;
         FlapsLevelElevatorEffect0=0;
@@ -4439,7 +4443,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.10;
         ServiceCeilingAltitude = 760;
-        } 
+        }
 
     if (id == FIGHTER_P38F)
         {
@@ -4470,16 +4474,16 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         impact = 1000;
         BlackoutSensitivity = 20.0F;
         RedoutSensitivity = 40.0F;
-        StaticDrag = 104.0; 
+        StaticDrag = 104.0;
         ClipDistance = 0.03;
-        FlapSpeed = .133; 
+        FlapSpeed = .133;
         FlapsLevelElevatorEffect0=0;
         FlapsLevelElevatorEffect1=800;
         FlapsLevelElevatorEffect2=1600;
         FlapsLevelElevatorEffect3=3200;
         FlapsLevelElevatorEffect4=8000;
         SpeedBrakePower=1.00;
-        MaxFullPowerAltRatio = 0.77; 
+        MaxFullPowerAltRatio = 0.77;
         inertia = 0.37;
         deadweight = 0.13;
         CompressibilitySpeed = 0.25; // Faster than this degrades elevator and aileron response unless SpeedBrakes are available and active. Was .29
@@ -4490,7 +4494,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         WepCapable = true;
         StallSpeed = 0.093;
         ServiceCeilingAltitude = 870;
-        } 
+        }
 
     if (id >= FIGHTER1 && id <= FIGHTER2)
         {
@@ -4629,7 +4633,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         thrust = 0.05;
         maxgamma = 0;
         maxtheta = 0.03;
-        manoeverability = 4.0; 
+        manoeverability = 4.0;
         impact = 200;
         Durability = maxDurability = 9500;
         missiles [6] = 200;
@@ -4644,7 +4648,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         thrust = 0.05;
         maxgamma = 0;
         maxtheta = 0.03;
-        manoeverability = 6.0; 
+        manoeverability = 6.0;
         impact = 300;
         Durability = maxDurability = 4800;
         o->cubex = zoom * 0.4;
@@ -4669,7 +4673,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         {
         intelligence = 100;
         maxthrust = 0.5 * missilethrustbase;
-        RollRate = 3.5; 
+        RollRate = 3.5;
         manoeverability = 4.5;
         StaticDrag = 8;
         ttl = 320 * timestep;
@@ -4680,7 +4684,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         intelligence = 100;
         maxthrust = 0.65 * missilethrustbase;
         RollRate = 4.5;
-        manoeverability = 5.5; 
+        manoeverability = 5.5;
         StaticDrag = 8;
         ttl = 340 * timestep;
         impact = 2200;
@@ -4690,7 +4694,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         intelligence = 10;
         maxthrust = 0.60 * missilethrustbase;
         RollRate = 1.2;
-        manoeverability = 1.0; 
+        manoeverability = 1.0;
         ai = true;
         StaticDrag = 8;
         ttl = 300 * timestep;
@@ -4701,7 +4705,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         intelligence = 10;
         maxthrust = 0.75 * missilethrustbase;
         RollRate = 1.5;
-        manoeverability = 1.0; 
+        manoeverability = 1.0;
         ai = true;
         StaticDrag = 8;
         ttl = 400 * timestep;
@@ -4733,7 +4737,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         intelligence = 100;
         maxthrust = 0.90 * missilethrustbase;
         RollRate = 3.0;
-        manoeverability = 6.0; 
+        manoeverability = 6.0;
         StaticDrag = 10;
         ttl = 320 * timestep;
         impact = 2200;
@@ -4743,7 +4747,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
         intelligence = 0;
         maxthrust = 0.1;
         RollRate = 1.0;
-        manoeverability = 1.0; 
+        manoeverability = 1.0;
         ai = true;
         StaticDrag = 8;
         ttl = -1;
@@ -4862,7 +4866,7 @@ void AIObj::newinit (int id, int party, int intelligence, int precision, int agg
     this->precision = precision;
     this->aggressivity = aggressivity;
     missileCount ();
-    } 
+    }
 
 void AIObj::newinit (int id, int party, int intelligence)
     {
@@ -4955,13 +4959,13 @@ void AIObj::fireCannon (DynamicObj *laser, float phi)
         }
     else
         {
-        laser->gamma = gamma;    
+        laser->gamma = gamma;
         }
 
     laser->party = party;
     laser->ttl = 80 * timestep;
     laser->Durability = 1;
-    laser->immunity = (int) (zoom * 3) * timestep; 
+    laser->immunity = (int) (zoom * 3) * timestep;
     laser->source = this;
     laser->phi = phi;
     laser->theta = theta;
@@ -5064,7 +5068,7 @@ void AIObj::fireMissile2 (int id, AIObj *missile, AIObj *target)
     missile->dgamma = 0;
     missile->source = this;
     if (missile->id == MISSILE_DF1)
-       { 
+       {
        display ("AIObj::fireMissile2() dropped MISSILE_DF1", LOG_MOST);
        missile->gamma -= 11;
        missile->recgamma -= 11;
@@ -5076,11 +5080,11 @@ void AIObj::fireMissile2 (int id, AIObj *missile, AIObj *target)
         missile->tl->y -=0.3;
        }
     if (missile->id == BOMB01)
-       { 
+       {
        display ("AIObj::fireMissile2() dropped BOMB02", LOG_MOST);
        MostRecentBombFlightTimer = 0;
-       missile->immunity = (30 + (int) (zoom * 6.0)) * timestep; 
-       missile->gamma -=10; 
+       missile->immunity = (30 + (int) (zoom * 6.0)) * timestep;
+       missile->gamma -=10;
        missile->recgamma -=10;
        if (missile->gamma <0)
           {
@@ -5089,8 +5093,8 @@ void AIObj::fireMissile2 (int id, AIObj *missile, AIObj *target)
           }
        }
     if (missile->id > BOMB01 && missile->id < FIGHTER1)
-       { 
-       MissileFired = true; 
+       {
+       MissileFired = true;
        }
     display ("AIObj::fireMissile2() missile->gamma =", LOG_MOST);
     sprintf (DebugBuf, "%f", missile->gamma);
@@ -5102,7 +5106,7 @@ void AIObj::fireMissile2 (int id, AIObj *missile, AIObj *target)
         missile->manoeverheight = 30 * timestep;
         missile->recheight = missile->tl->y - l->getHeight (missile->tl->x, missile->tl->z) - 4;
         }
-    } 
+    }
 
 void AIObj::fireFlare2 (DynamicObj *flare)
     {
@@ -5161,7 +5165,7 @@ void AIObj::fireChaff2 (DynamicObj *chaff)
     chaff->activate ();
     chaff->explode = 0;
     chaff->zoom = 0.12F;
-    } 
+    }
 
 int AIObj::firstMissile ()
     {
@@ -5581,7 +5585,7 @@ bool AIObj::selectMissileGround (AIObj **missile)
 void AIObj::targetNearestGroundEnemy (AIObj **f)
     {
     int i;
-    float d = 1E12; 
+    float d = 1E12;
     ttf = 50 * timestep;
 
     for (i = 0; i < maxfighter; i ++)
@@ -5615,14 +5619,14 @@ void AIObj::targetNearestGroundEnemy (AIObj **f)
 void AIObj::targetNearestEnemy (AIObj **f)
     {
     int i;
-    float d = 1E12; 
+    float d = 1E12;
     ttf = 50 * timestep;
 
     for (i = 0; i < maxfighter; i ++)
-        { 
+        {
         if (this != f [i] && party != f [i]->party && f [i]->active)
-            { 
-            float phi = getAngle (f [i]); 
+            {
+            float phi = getAngle (f [i]);
             float d2 = distance (f [i]) * (60 + fabs (phi)); // prefer enemies in front
 
             if (d2 < d)
@@ -5676,7 +5680,7 @@ void AIObj::targetLockingEnemy (AIObj **f)
         {
         target = NULL;
         }
-    } 
+    }
 
 void AIObj::targetNext (AIObj **f)
     {
@@ -5709,13 +5713,13 @@ void AIObj::targetNext (AIObj **f)
             i = 0;
             }
         }
-    while ((!f [i]->active || distance (f [i]) > 11000) && z <= 1); 
+    while ((!f [i]->active || distance (f [i]) > 11000) && z <= 1);
     target = f [i];
     if (z > 1 && !ai)
         {
         target = NULL;
         }
-    } 
+    }
 
 void AIObj::targetNextEnemy (AIObj **f)
     {
@@ -5763,7 +5767,7 @@ void AIObj::targetNextEnemy (AIObj **f)
         {
         target = NULL;
         }
-    } 
+    }
 
 void AIObj::targetPrevious (AIObj **f)
     {
@@ -5802,7 +5806,7 @@ void AIObj::targetPrevious (AIObj **f)
         {
         target = NULL;
         }
-    } 
+    }
 
 // core AI method
 void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicObj **flare, DynamicObj **chaff)
@@ -5849,11 +5853,11 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
         {
         return;
         }
-    
+
     if (haveMissile())
-       { 
+       {
        if ((missiletype == BOMB01 - MISSILE1) || (missiletype == MISSILE_DF1 - MISSILE1))
-          { 
+          {
           ttf = 0;
           }
        }
@@ -5887,10 +5891,10 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
         return;
         }
     if (NetworkMissionIsActiveWithDataFlow)
-        { 
-        return; 
+        {
+        return;
         }
-    
+
     // do expensive calculations only once
     float myheight = l->getExactHeight (tl->x, tl->z);
     float targetheight = tl->y;
@@ -5905,13 +5909,13 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
         disttarget = distance (target);    // distance to target
         }
     else
-        { 
+        {
         disttarget = 1;
         }
 
     // get a new target if necessary
     if (id >= MISSILE1 && id <= MISSILE2)
-        { 
+        {
         if (target == NULL)
             {
             ttl = 0;
@@ -5948,15 +5952,15 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
             }
 
     if (id >= FIGHTER1 && id <= FIGHTER2)
-        { 
+        {
         if (haveMissile () && target != NULL)
-            { 
-            
+            {
+
             float dgamma = atan ((target->tl->y - tl->y) / disttarget) * 180 / PI - (gamma - 180);
             float dphi = getAngle (target);
 
             if ((missiletype == BOMB01 - MISSILE1) || (missiletype == MISSILE_DF1 - MISSILE1))
-                { 
+                {
                 ttf = 0;
                 }
             else if (fabs (dphi) < 50 && fabs (dgamma) < 50 && party != target->party)
@@ -6008,7 +6012,7 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
                 ttf = 50 * timestep;
                 }
             }
-        } 
+        }
 
     if (!ai)
         {
@@ -6024,8 +6028,8 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
             MissionNumber == MISSION_NETWORKBATTLE03
             )
         )
-           { 
-           manoeverstate = 100; 
+           {
+           manoeverstate = 100;
            if (MissionNumber == MISSION_HEADTOHEAD00)
               {
               ThreeDObjects[MissionHeadToHead00State]->realspeed = InPacket.UdpObjSpeed;
@@ -6034,7 +6038,7 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
               ThreeDObjects[MissionHeadToHead00State]->ruddereffect = InPacket.UdpObjRudder;
               ThreeDObjects[MissionHeadToHead00State]->thrust = InPacket.UdpObjThrust;
               }
-           } 
+           }
 
     int lsdist = 15;
 
@@ -6042,7 +6046,7 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
     int flyxs = l->getCoord ((int) flyx), flyzs = l->getCoord ((int) flyz);
     if (manoeverheight > 0 & manoeverstate !=100)
       {
-      
+
       recheight2 = l->getExactHeight (flyx, flyz) + recheight;
       }
     else
@@ -6061,12 +6065,12 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
             tl->y - myheight < 50
             )
           )
-          { 
-          recheight2 = target->tl->y - 8 * target->thrust * SIN(target->gamma); 
+          {
+          recheight2 = target->tl->y - 8 * target->thrust * SIN(target->gamma);
           }
       else if (manoeverstate!=100)
           {
-          
+
           float flyx2 = tl->x + forcex * lsdist * 3, flyz2 = tl->z + forcez * lsdist * 3;
           float flyx3 = tl->x + forcex * lsdist * 8, flyz3 = tl->z + forcez * lsdist * 8;
           float h1 = l->getMaxHeight (flyx, flyz);
@@ -6079,7 +6083,7 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
       }
     // fire flares and chaff
     if (id >= FIGHTER1 && id <= FIGHTER2 && manoeverstate!=100)   // for fighters do the following
-        { 
+        {
         if (manoevertheta <= 0)
             for (i = 0; i < maxmissile; i ++)
                 if (m [i]->ttl > 0)
@@ -6487,7 +6491,7 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
             }
         }
 
-    if (!ai || target == NULL)   
+    if (!ai || target == NULL)
         {
         return;
         }
@@ -6589,7 +6593,7 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
         }
 
     // heading calculations
-    
+
     if (id >= FIGHTER1 && id < FIGHTER2)   // for aircraft do the following
         {
         if (!acttype && disttarget <= 1000 && manoevertheta <= 0)   // no special action, near distance, no roll manoever
@@ -7030,6 +7034,6 @@ void AIObj::aiAction (Uint32 dt, AIObj **f, AIObj **m, DynamicObj **c, DynamicOb
             rectheta = -90 + precision / 5;
             }
         }
-    } 
+    }
 
 #endif
