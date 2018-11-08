@@ -13106,15 +13106,16 @@ void sdlMainLoop ()
 
             distToEnemy = fplayer->distance(ThreeDObjects[1]);
             if (prevDistToEnemy == -1.0f) prevDistToEnemy = distToEnemy;
-            float rewardFromDist = 0.01 * (distToEnemy < prevDistToEnemy) - 0.01 * (distToEnemy > prevDistToEnemy);
+            //float rewardFromDist = 0.01 * (distToEnemy < prevDistToEnemy) - 0.01 * (distToEnemy > prevDistToEnemy);
+            float rewardFromDist = (distToEnemy - prevDistToEnemy);
             
             prevDistToEnemy = distToEnemy;
             
 			if (!fplayer->active && fplayer->explode >= 35 * timestep) {
-				statess << (-1.0f + rewardFromDist) << " " << 1;
+				statess << (rewardFromDist) << " " << 1;
 			}
 			else if (!ThreeDObjects[1]->active && ThreeDObjects[1]->explode >= 35 * timestep) {
-				statess << (1.0f + rewardFromDist) << " " << 1;
+				statess << (100.0f + rewardFromDist) << " " << 1;
 			}
 			else {
 				statess << (0.0f + rewardFromDist) << " " << 0;
