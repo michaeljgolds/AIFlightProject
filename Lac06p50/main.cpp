@@ -8912,7 +8912,7 @@ int game_levelInit ()
             }
         else
             {
-            ThreeDObjects [i]->tl->y = l->getHeight (ThreeDObjects [i]->tl->x, ThreeDObjects [i]->tl->z) + 20;
+            //ThreeDObjects [i]->tl->y = l->getHeight (ThreeDObjects [i]->tl->x, ThreeDObjects [i]->tl->z) + 20;
             }
         }
 

@@ -132,11 +132,11 @@ class PolicyGradient:
         # discount and normalize episode reward
         discounted_ep_rs_norm = self._discount_and_norm_rewards()
 
-        print(discounted_ep_rs_norm)
+        #print(discounted_ep_rs_norm)
         print(tf.trainable_variables())
         gr = tf.get_default_graph()
         print("layer 1 tensor before training")
-        print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
+        #print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
         layer1before = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
         layer2before = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
         
@@ -157,7 +157,7 @@ class PolicyGradient:
         layer1after = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
         layer2after = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
         print("layer 1 tensor after training")
-        print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
+        #print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
         
         print("Non-zero elements in difference layer 1:")
         #np.set_printoptions(threshold=np.nan)

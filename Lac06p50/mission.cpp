@@ -2448,7 +2448,7 @@ void MissionTutorial3::start ()
     playerInit ();
     srand((unsigned)time(NULL));
     fplayer->tl->x = rand() % (1800) - 900 ;
-    //fplayer->tl->y = rand() % (90-20+1) + 20;
+    fplayer->tl->y = 10;
     fplayer->tl->z = rand() % (1800) - 900;
     fplayer->phi = 0;
     fplayer->gamma = 180;
@@ -2464,12 +2464,13 @@ void MissionTutorial3::start ()
         ThreeDObjects [i]->target = ThreeDObjects [0];
         ThreeDObjects [i]->o = &model_figb;
         ThreeDObjects [i]->tl->x = fplayer->tl->x;
-        ThreeDObjects [i]->tl->z = fplayer->tl->z - 4;
+        ThreeDObjects [i]->tl->y = fplayer->tl->y;
+        ThreeDObjects [i]->tl->z = fplayer->tl->z - 2;
         ThreeDObjects [i]->phi = fplayer->phi;
         ThreeDObjects [i]->gamma = fplayer->gamma;
         ThreeDObjects [i]->theta = fplayer->theta;
-        ThreeDObjects [i]->realspeed = fplayer->realspeed;
-        ThreeDObjects [i]->newinit(FIGHTER_HAWK,0,400,100,800); // id, party, stupidity, precision, passivity
+        ThreeDObjects [i]->realspeed = 0;
+        ThreeDObjects [i]->newinit(FIGHTER_SPIT9,0,400,100,800); // id, party, stupidity, precision, passivity
         ThreeDObjects [i]->deactivate ();
         }
     ThreeDObjects [1]->activate ();

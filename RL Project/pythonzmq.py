@@ -13,6 +13,28 @@ from RL_brain import PolicyGradient
 import matplotlib.pyplot as plt
 import numpy as np
 
+def normalizeState(state):
+    state[0] = state[0] /1000           #player x
+    state[1] = (state[1] -50)/100       #player y
+    state[2] = state[2] / 1000          #player z
+    state[3] = (state[3] - 0.125 ) * 8  #player speed
+    state[4] = (state[4] - b ) * m  #accx
+    state[5] = (state[5] - b ) * m  #accy
+    state[6] = (state[6] - b ) * m  #accz
+    state[7] = (state[7] - 180 ) / 360  #player phi
+    state[8] = (state[8] - 180 ) / 360 #player gamma
+    state[9] = (state[9] - 180 ) / 360 #player theta
+    state[10] = (state[10] - b ) * m  #elevator effect
+    state[11] = (state[11] - b ) * m  #rudder effect
+    state[12] = (state[12] - b ) * m  #roll effect
+    state[13] = (state[13] - b ) * m  #enemy x
+    state[14] = (state[14] - b ) * m  #enemy y
+    state[15] = (state[15] - b ) * m  #enemy z
+    state[16] = (state[16] - b ) * m  #enemy speed
+    state[17] = (state[17] - 180 ) / 360  #enemy phi
+    state[18] = (state[18] - 180 ) / 360 #enemy gamma
+    state[19] = (state[19] - 180 ) / 360 #enemy theta
+    
 RL = PolicyGradient(
     n_actions=108,
     n_features=20,
@@ -50,8 +72,8 @@ for i_episode in range(30000):
         message = socket.recv()
         #print("Received request: %s" % message)
         state = [float(f) for f in message.decode().split(' ')]
-        #print("Player x,y,z: " + str(state[0:3]))
-        #print("Player speed: " + str(state[3]))
+        print("Player x,y,z: " + str(state[0:3]))
+        print("Player speed: " + str(state[3]))
 
         
         observation_ = np.array(state[0:20])
