@@ -33,8 +33,10 @@ for i_episode in range(30000):
     message = socket.recv()
     #print("Received request: %s" % message)
     state = [float(f) for f in message.decode().split(' ')]
-    #print("Player x,y,z: " + str(state[0:3]))
-    #print("Player speed: " + str(state[3]))
+    print("Player x,y,z: " + str(state[0:3]))
+    print("Player phi, gamma, theta: " + str(state[7:10]))
+    print("Enemy x,y,z: " + str(state[13:16]))
+    print("Enemy phi, gamma, theta: " + str(state[17:20]))
     print(i_episode)
     observation = np.array(state[0:20])
     while True:
