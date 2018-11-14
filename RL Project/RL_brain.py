@@ -66,7 +66,7 @@ class PolicyGradient:
         # fc1
         layer = tf.layers.dense(
             inputs=self.tf_obs,
-            units=1024,
+            units=256,
             activation=tf.nn.tanh,  # relu activation
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1',
@@ -132,7 +132,7 @@ class PolicyGradient:
         # discount and normalize episode reward
         discounted_ep_rs_norm = self._discount_and_norm_rewards()
 
-        #print(discounted_ep_rs_norm)
+        print(discounted_ep_rs_norm)
         print(tf.trainable_variables())
         gr = tf.get_default_graph()
         print("layer 1 tensor before training")
@@ -180,11 +180,11 @@ class PolicyGradient:
             discounted_ep_rs = np.zeros_like(self.ep_rs)
             running_add = 0
             for t in reversed(range(0, len(self.ep_rs))):
-                running_add = running_add * self.gamma + 1000 * self.ep_rs[t]
+                running_add = running_add * self.gamma + self.ep_rs[t]
                 discounted_ep_rs[t] = running_add
         
-            #discounted_ep_rs -= np.mean(discounted_ep_rs)
-            #discounted_ep_rs /= np.std(discounted_ep_rs)
+            discounted_ep_rs -= np.mean(discounted_ep_rs)
+            discounted_ep_rs /= np.std(discounted_ep_rs)
             return discounted_ep_rs
         else:
             
@@ -192,13 +192,13 @@ class PolicyGradient:
             running_add = 0
             for t in reversed(range(0, 1000)):
                 if t >= len(self.ep_rs):
-                    running_add = running_add * self.gamma - 1000
+                    running_add = running_add * self.gamma
                 else:
                     running_add = running_add * self.gamma + self.ep_rs[t]
                     discounted_ep_rs[t] = running_add
         
-            #discounted_ep_rs -= np.mean(np.concatenate((discounted_ep_rs, np.zeros_like([-1000]*(1000-len(self.ep_rs))))))
-            #discounted_ep_rs /= np.std(np.concatenate((discounted_ep_rs, np.zeros_like([-1000]*(1000-len(self.ep_rs))))))
+            discounted_ep_rs -= np.mean(np.concatenate((discounted_ep_rs, np.zeros_like([0]*(1000-len(self.ep_rs))))))
+            discounted_ep_rs /= np.std(np.concatenate((discounted_ep_rs, np.zeros_like([0]*(1000-len(self.ep_rs))))))
             return discounted_ep_rs
 
 

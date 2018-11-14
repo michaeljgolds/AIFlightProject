@@ -252,6 +252,7 @@ char PlayerIdStrings[10][9] =
 unsigned char firetex [maxfx * maxfy * 4];
 
 // global integer variables:
+int IncreaseDifficulty = 0;
 int AirfieldXMax = 219;
 int AirfieldXMin = 161;
 int AirfieldYMax = 10;
@@ -2379,6 +2380,9 @@ void checkargs (int argc, char **argv)
             display ((char *)"MouseControl acknowledged.", LOG_MOST);
             MouseControlFlag = 1;
             }
+	else if (isdigit(argv [i] [0])) {
+		IncreaseDifficulty = atoi(argv[i]);
+	}
         else
             {
             display ((char *)"Invalid command line parameter", LOG_FATAL);
@@ -13108,13 +13112,14 @@ void sdlMainLoop ()
             if (prevDistToEnemy == -1.0f) prevDistToEnemy = distToEnemy;
             //float rewardFromDist = 0.01 * (distToEnemy < prevDistToEnemy) - 0.01 * (distToEnemy > prevDistToEnemy);
             float rewardFromDist = (distToEnemy - prevDistToEnemy);
-            
+
             prevDistToEnemy = distToEnemy;
-            
+
 			if (!fplayer->active && fplayer->explode >= 35 * timestep) {
-				statess << (rewardFromDist) << " " << 1;
+				statess << (-100.0f + rewardFromDist) << " " << 1;
 			}
-			else if (!ThreeDObjects[1]->active && ThreeDObjects[1]->explode >= 35 * timestep) {
+			else if (!ThreeDObjects[1]->active) {
+				std::cout << "Killed enemy, sending reward-------------------------------------------------------------" << std::endl;
 				statess << (100.0f + rewardFromDist) << " " << 1;
 			}
 			else {
@@ -13141,7 +13146,7 @@ void sdlMainLoop ()
 
 			 //control via python array:
             //switch is for discrete action:
-            
+
             switch (action[0]){
 				case '2':
 				fplayer->elevatoreffect = -0.5f;
@@ -13178,7 +13183,7 @@ void sdlMainLoop ()
 				break;
 
 			}
-			
+
 
 			//if statements are for continuous control
 /*
@@ -13222,7 +13227,7 @@ void sdlMainLoop ()
 				event_thrustUp();
 				break;
 			}
-		
+
 
 
 		}
