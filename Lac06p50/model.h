@@ -133,8 +133,9 @@ class CVertex
 class CRotation
 {
   private:
-  float rot [3] [3]; // rotation matrix
+  //float rot [3] [3]; // rotation matrix
   public:
+  float rot [3] [3];
   short a, b, c; // rotation angles for each plane of the carthesian cosy
   CRotation ();
   ~CRotation ();

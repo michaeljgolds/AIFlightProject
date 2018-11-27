@@ -22,7 +22,7 @@ def normalizeState(state):
     #state[5] = (state[5] - b ) * m  #accy
     #state[6] = (state[6] - b ) * m  #accz
     state[7] = (state[7] - 180 ) / 180  #player phi
-    state[8] = (state[8] - 180 ) / 180 #player gamma
+    state[8] = (state[8] - 180 ) / 90 #player gamma
     state[9] = (state[9] - 0 ) / 180 #player theta
     #state[10] = (state[10] - b ) * m  #elevator effect
     #state[11] = (state[11] - b ) * m  #rudder effect
@@ -74,14 +74,14 @@ for i_episode in range(30000):
         #print("Received request: %s" % message)
         state = [float(f) for f in message.decode().split(' ')]
         normalizeState(state)
-        print("Player x,y,z: " + str(state[0:3]))
-        print("Player speed: " + str(state[3]))
-        print("Player accx,accy,accz: " + str(state[4:7]))
-        print("Player phi,gamma,theta: " + str(state[7:10]))
-        print("Player elevator,rudder,roller: " + str(state[10:13]))
-        print("Enemy x,y,z: " + str(state[13:16]))
-        print("Enemy speed: " + str(state[16]))
-        print("Enemy phi, gamma, theta: " + str(state[17:20]))
+        #print("Player x,y,z: " + str(state[0:3]))
+        #print("Player speed: " + str(state[3]))
+        #print("Player accx,accy,accz: " + str(state[4:7]))
+        #print("Player phi,gamma,theta: " + str(state[7:10]))
+        #print("Player elevator,rudder,roller: " + str(state[10:13]))
+        #print("Enemy x,y,z: " + str(state[13:16]))
+        #print("Enemy speed: " + str(state[16]))
+        #print("Enemy phi, gamma, theta: " + str(state[17:20]))
 
         
         observation_ = np.array(state[0:20])
@@ -96,12 +96,19 @@ for i_episode in range(30000):
 
         if done:
             ep_rs_sum = sum(RL.ep_rs)
-
+            
+            r_sum_file = open("reward_out.txt","a+")
+            if len(RL.ep_rs) > 1000:
+                r_sum_file.write(str(sum(RL.ep_rs[0:1000]))+"\n")
+            else:
+                r_sum_file.write(str(sum(RL.ep_rs))+"\n")
+            r_sum_file.close()
+            
             if 'running_reward' not in globals():
                 running_reward = ep_rs_sum
             else:
                 running_reward = running_reward * 0.99 + ep_rs_sum * 0.01
-            print("episode:", i_episode, "  reward:", running_reward)
+            #print("episode:", i_episode, "  reward:", running_reward)
 
             vt = RL.learn()
             
@@ -114,4 +121,4 @@ for i_episode in range(30000):
         
         
         #  Do some 'work'
-        #time.sleep(0.038)
+        #time.sleep(0.1)

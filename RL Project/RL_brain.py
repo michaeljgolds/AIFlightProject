@@ -55,7 +55,7 @@ class PolicyGradient:
             print("Didn't load model, no file")
             self.sess.run(tf.global_variables_initializer())
         
-        
+        self.loss_out_file = open("loss_out.txt","a+")
         
 
     def _build_net(self):
@@ -66,13 +66,15 @@ class PolicyGradient:
         # fc1
         layer = tf.layers.dense(
             inputs=self.tf_obs,
-            units=256,
+            units=1024,
             activation=tf.nn.tanh,  # relu activation
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1',
-            use_bias=False
+            use_bias=True,
+            bias_initializer=tf.constant_initializer(0.1)
         )
-        layer1_print = tf.Print(layer,[layer],"layer 1: ")
+        #layer1_print = tf.Print(layer,[layer],"layer 1: ")
+        
         #layer2 = tf.layers.dense(
         #   inputs=layer1_print,
         #    units=256,
@@ -93,34 +95,35 @@ class PolicyGradient:
         #layer3_print = tf.Print(layer3,[layer3],"layer 3: ")
          #fc2
         all_act = tf.layers.dense(
-            inputs=layer1_print,
+            inputs=layer,
             units=self.n_actions,
             activation=None,
             kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
             name='fc4',
-            use_bias=False
+            use_bias=True,
+            bias_initializer=tf.constant_initializer(0.1)
         )
         all_act_print = tf.Print(all_act,[all_act],"layer all_act: ")
         
-        self.all_act_prob = tf.nn.softmax(all_act_print, name='act_prob')  # use softmax to convert to probability
+        self.all_act_prob = tf.nn.softmax(all_act, name='act_prob')  # use softmax to convert to probability
 
         with tf.name_scope('loss'):
             # to maximize total reward (log_p * R) is to minimize -(log_p * R), and the tf only have minimize(loss)
             neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=all_act, labels=self.tf_acts)   # this is negative log of chosen action
             # or in this way:
             # neg_log_prob = tf.reduce_sum(-tf.log(self.all_act_prob)*tf.one_hot(self.tf_acts, self.n_actions), axis=1)
-            loss = tf.reduce_mean(neg_log_prob * self.tf_vt)  # reward guided loss
-            self.loss_print = tf.Print(loss,[loss],"loss: ")
+            self.loss = tf.reduce_mean(neg_log_prob * self.tf_vt)  # reward guided loss
+            self.loss_print = tf.Print(self.loss,[self.loss],"loss: ")
             
         with tf.name_scope('train'):
-            self.train_op = tf.train.AdamOptimizer(self.lr).minimize(loss)
+            self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
         
         
     def choose_action(self, observation):
         prob_weights = self.sess.run(self.all_act_prob, feed_dict={self.tf_obs: observation[np.newaxis, :]})
         action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
-        print(prob_weights[0][action])
-        print(action)
+        #print(prob_weights[0][action])
+        #print(action)
         return action
 
     def store_transition(self, s, a, r):
@@ -132,41 +135,46 @@ class PolicyGradient:
         # discount and normalize episode reward
         discounted_ep_rs_norm = self._discount_and_norm_rewards()
 
-        print(discounted_ep_rs_norm)
-        print(tf.trainable_variables())
+        #print(discounted_ep_rs_norm)
+        #print(tf.trainable_variables())
         gr = tf.get_default_graph()
-        print("layer 1 tensor before training")
+        #print("layer 1 tensor before training")
         #print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
         layer1before = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
         layer2before = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
         
         self.sess.run(self.loss_print, feed_dict={
              self.tf_obs: np.vstack(self.ep_obs),  # shape=[None, n_obs]
-             self.tf_acts: np.array(self.ep_as),  # shape=[None, ]
+            self.tf_acts: np.array(self.ep_as),  # shape=[None, ]
              self.tf_vt: discounted_ep_rs_norm,  # shape=[None, ]
         })
         
         # train on episode
-        self.sess.run(self.train_op, feed_dict={
+        _, loss_val = self.sess.run([self.train_op, self.loss], feed_dict={
              self.tf_obs: np.vstack(self.ep_obs),  # shape=[None, n_obs]
              self.tf_acts: np.array(self.ep_as),  # shape=[None, ]
              self.tf_vt: discounted_ep_rs_norm,  # shape=[None, ]
         })
 
+        print(loss_val)
+        
+        self.loss_out_file = open("loss_out.txt","a+")
+        self.loss_out_file.write(str(loss_val)+"\n")
+        self.loss_out_file.close()
         
         layer1after = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
         layer2after = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
-        print("layer 1 tensor after training")
+        #print("layer 1 tensor after training")
         #print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
         
-        print("Non-zero elements in difference layer 1:")
+        #print("Non-zero elements in difference layer 1:")
         #np.set_printoptions(threshold=np.nan)
-        print(np.transpose(np.nonzero(layer1after-layer1before)))
+        #print(np.transpose(np.nonzero(layer1after-layer1before)))
         
         
-        print("Non-zero elements in difference layer 2:")
+        #print("Non-zero elements in difference layer 2:")
         #np.set_printoptions(threshold=np.nan)
-        print(np.transpose(np.nonzero(layer2after-layer2before)))
+        #print(np.transpose(np.nonzero(layer2after-layer2before)))
         
         self.ep_obs, self.ep_as, self.ep_rs = [], [], []    # empty episode data
         return discounted_ep_rs_norm
@@ -204,5 +212,5 @@ class PolicyGradient:
 
     def SaveNet(self):
         save_path = self.saver.save(self.sess, "./model.ckpt")
-        print ("saved to %s" % save_path)
+        #print ("saved to %s" % save_path)
         
