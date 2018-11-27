@@ -91,7 +91,7 @@ for i_episode in range(30000):
 
         RL.store_transition(observation, actionNumber, reward)
         
-        if donefloat == 1:
+        if donefloat == 1 or len(RL.ep_rs) > 1000:
             done = True
 
         if done:
@@ -121,4 +121,4 @@ for i_episode in range(30000):
         
         
         #  Do some 'work'
-        #time.sleep(0.1)
+        time.sleep(0.01)
