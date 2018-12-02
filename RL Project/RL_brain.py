@@ -61,13 +61,17 @@ class PolicyGradient:
     def _build_net(self):
         with tf.name_scope('inputs'):
             self.tf_obs = tf.placeholder(tf.float32, [None, self.n_features], name="observations")
-            self.tf_acts = tf.placeholder(tf.int32, [None, ], name="actions_num")
+            self.tf_act_ele = tf.placeholder(tf.int32, [None, ], name="actions_ele")
+            self.tf_act_rud = tf.placeholder(tf.int32, [None, ], name="actions_rud")
+            self.tf_act_roll = tf.placeholder(tf.int32, [None, ], name="actions_roll")
+            self.tf_act_shoot = tf.placeholder(tf.int32, [None, ], name="actions_shoot")
+            self.tf_act_thrust = tf.placeholder(tf.int32, [None, ], name="actions_thrust")
             self.tf_vt = tf.placeholder(tf.float32, [None, ], name="actions_value")
         # fc1
         layer = tf.layers.dense(
             inputs=self.tf_obs,
             units=1024,
-            activation=tf.nn.tanh,  # relu activation
+            activation=tf.nn.tanh,  # tanh activation
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1',
             use_bias=True,
@@ -94,34 +98,110 @@ class PolicyGradient:
         #)
         #layer3_print = tf.Print(layer3,[layer3],"layer 3: ")
          #fc2
-        all_act = tf.layers.dense(
+        act_ele = tf.layers.dense(
             inputs=layer,
-            units=self.n_actions,
+            units=3,
             activation=None,
             kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
-            name='fc4',
+            name='act_ele',
+            use_bias=True,
+            bias_initializer=tf.constant_initializer(0.1)
+        ) 
+        
+        act_rud = tf.layers.dense(
+            inputs=layer,
+            units=3,
+            activation=None,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+            name='act_rud',
+            use_bias=True,
+            bias_initializer=tf.constant_initializer(0.1)
+        ) 
+        
+        act_roll = tf.layers.dense(
+            inputs=layer,
+            units=3,
+            activation=None,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+            name='act_roll',
+            use_bias=True,
+            bias_initializer=tf.constant_initializer(0.1)
+        ) 
+        act_shoot = tf.layers.dense(
+            inputs=layer,
+            units=2,
+            activation=None,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+            name='act_shoot',
             use_bias=True,
             bias_initializer=tf.constant_initializer(0.1)
         )
-        all_act_print = tf.Print(all_act,[all_act],"layer all_act: ")
+        act_thrust = tf.layers.dense(
+            inputs=layer,
+            units=2,
+            activation=None,
+            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+            name='act_thrust',
+            use_bias=True,
+            bias_initializer=tf.constant_initializer(0.1)
+        )
+        self.act_prob_ele = tf.nn.softmax(act_ele, name='act_prob_ele')
+        self.act_prob_rud = tf.nn.softmax(act_rud, name='act_prob_rud')
+        self.act_prob_roll = tf.nn.softmax(act_roll, name='act_prob_roll')
+        self.act_prob_shoot = tf.nn.softmax(act_shoot, name='act_prob_shoot')
+        self.act_prob_thrust = tf.nn.softmax(act_thrust, name='act_prob_thrust')
         
-        self.all_act_prob = tf.nn.softmax(all_act, name='act_prob')  # use softmax to convert to probability
+        #all_act = tf.layers.dense(
+          #  inputs=layer,
+           # units=self.n_actions,
+          #  activation=None,
+         #   kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.3),
+        #    name='fc4',
+        #    use_bias=True,
+        #    bias_initializer=tf.constant_initializer(0.1)
+        #)
+        #all_act_print = tf.Print(all_act,[all_act],"layer all_act: ")
+        
+        #self.all_act_prob = tf.nn.softmax(all_act, name='act_prob')  # use softmax to convert to probability
 
         with tf.name_scope('loss'):
             # to maximize total reward (log_p * R) is to minimize -(log_p * R), and the tf only have minimize(loss)
-            neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=all_act, labels=self.tf_acts)   # this is negative log of chosen action
+            #neg_log_prob = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=all_act, labels=self.tf_acts)   # this is negative log of chosen action
             # or in this way:
             # neg_log_prob = tf.reduce_sum(-tf.log(self.all_act_prob)*tf.one_hot(self.tf_acts, self.n_actions), axis=1)
-            self.loss = tf.reduce_mean(neg_log_prob * self.tf_vt)  # reward guided loss
-            self.loss_print = tf.Print(self.loss,[self.loss],"loss: ")
-            
+            #self.loss = tf.reduce_mean(neg_log_prob * self.tf_vt)  # reward guided loss
+            #self.loss_print = tf.Print(self.loss,[self.loss],"loss: ")
+            neg_log_prob_ele = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=act_ele, labels=self.tf_act_ele)
+            neg_log_prob_rud = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=act_rud, labels=self.tf_act_rud)
+            neg_log_prob_roll = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=act_roll, labels=self.tf_act_roll)
+            neg_log_prob_shoot = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=act_shoot, labels=self.tf_act_shoot)
+            neg_log_prob_thrust = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=act_thrust, labels=self.tf_act_thrust)
+            self.loss_ele = tf.reduce_mean(neg_log_prob_ele * self.tf_vt)
+            self.loss_rud = tf.reduce_mean(neg_log_prob_rud * self.tf_vt)
+            self.loss_roll = tf.reduce_mean(neg_log_prob_roll * self.tf_vt)
+            self.loss_shoot = tf.reduce_mean(neg_log_prob_shoot * self.tf_vt)
+            self.loss_thrust = tf.reduce_mean(neg_log_prob_thrust * self.tf_vt)
         with tf.name_scope('train'):
-            self.train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
+            self.train_op_ele = tf.train.AdamOptimizer(self.lr).minimize(self.loss_ele)
+            self.train_op_rud = tf.train.AdamOptimizer(self.lr).minimize(self.loss_rud)
+            self.train_op_roll = tf.train.AdamOptimizer(self.lr).minimize(self.loss_roll)
+            self.train_op_shoot = tf.train.AdamOptimizer(self.lr).minimize(self.loss_shoot)
+            self.train_op_thrust = tf.train.AdamOptimizer(self.lr).minimize(self.loss_thrust)
         
         
     def choose_action(self, observation):
-        prob_weights = self.sess.run(self.all_act_prob, feed_dict={self.tf_obs: observation[np.newaxis, :]})
-        action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
+        prob_weight_ele, prob_weight_rud, prob_weight_roll, prob_weight_shoot, prob_weight_thrust = self.sess.run([self.act_prob_ele, self.act_prob_rud, self.act_prob_roll, self.act_prob_shoot, self.act_prob_thrust], feed_dict={self.tf_obs: observation[np.newaxis, :]})
+        action = [0,0,0,0,0]
+        #ele_ravel = prob_weight_ele.ravel()
+        #ele_ravel[ele_ravel.index(max(ele_ravel))] -= 0.03
+        #ele_ravel = [val + 0.01 for val in ele_ravel]
+        
+        print([prob_weight_ele, prob_weight_rud, prob_weight_roll, prob_weight_shoot, prob_weight_thrust])
+        action[0] = np.random.choice(range(prob_weight_ele.shape[1]), p=prob_weight_ele.ravel()) # select action w.r.t the actions prob
+        action[1] = np.random.choice(range(prob_weight_rud.shape[1]), p=prob_weight_rud.ravel())
+        action[2] = np.random.choice(range(prob_weight_roll.shape[1]), p=prob_weight_roll.ravel())
+        action[3] = np.random.choice(range(prob_weight_shoot.shape[1]), p=prob_weight_shoot.ravel())
+        action[4] = np.random.choice(range(prob_weight_thrust.shape[1]), p=prob_weight_thrust.ravel())
         #print(prob_weights[0][action])
         #print(action)
         return action
@@ -140,30 +220,34 @@ class PolicyGradient:
         gr = tf.get_default_graph()
         #print("layer 1 tensor before training")
         #print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
-        layer1before = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
-        layer2before = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
+        #layer1before = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
+        #layer2before = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
         
-        self.sess.run(self.loss_print, feed_dict={
-             self.tf_obs: np.vstack(self.ep_obs),  # shape=[None, n_obs]
-            self.tf_acts: np.array(self.ep_as),  # shape=[None, ]
-             self.tf_vt: discounted_ep_rs_norm,  # shape=[None, ]
-        })
+        #self.sess.run(self.loss_print, feed_dict={
+        #     self.tf_obs: np.vstack(self.ep_obs),  # shape=[None, n_obs]
+        #    self.tf_acts: np.array(self.ep_as),  # shape=[None, ]
+        #     self.tf_vt: discounted_ep_rs_norm,  # shape=[None, ]
+        #})
         
         # train on episode
-        _, loss_val = self.sess.run([self.train_op, self.loss], feed_dict={
+        self.sess.run([self.train_op_ele, self.train_op_rud, self.train_op_roll, self.train_op_shoot, self.train_op_thrust], feed_dict={
              self.tf_obs: np.vstack(self.ep_obs),  # shape=[None, n_obs]
-             self.tf_acts: np.array(self.ep_as),  # shape=[None, ]
+             self.tf_act_ele: np.array([act[0] for act in self.ep_as]),  # shape=[None, ]
+             self.tf_act_rud: np.array([act[1] for act in self.ep_as]),  # shape=[None, ]
+             self.tf_act_roll: np.array([act[2] for act in self.ep_as]),  # shape=[None, ]
+             self.tf_act_shoot: np.array([act[3] for act in self.ep_as]),  # shape=[None, ]
+             self.tf_act_thrust: np.array([act[4] for act in self.ep_as]),  # shape=[None, ]
              self.tf_vt: discounted_ep_rs_norm,  # shape=[None, ]
         })
 
-        print(loss_val)
+        #print(loss_val)
         
-        self.loss_out_file = open("loss_out.txt","a+")
-        self.loss_out_file.write(str(loss_val)+"\n")
-        self.loss_out_file.close()
+        #self.loss_out_file = open("loss_out.txt","a+")
+        #self.loss_out_file.write(str(loss_val)+"\n")
+        #self.loss_out_file.close()
         
-        layer1after = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
-        layer2after = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
+        #layer1after = gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess)
+        #layer2after = gr.get_tensor_by_name('fc4/kernel:0').eval(session=self.sess)
         #print("layer 1 tensor after training")
         #print(gr.get_tensor_by_name('fc1/kernel:0').eval(session=self.sess))
         

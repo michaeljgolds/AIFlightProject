@@ -2448,9 +2448,13 @@ void MissionTutorial3::start ()
     l->flatten (AirfieldXMin+30, AirfieldYMin+4, 30, 5);
     playerInit ();
     srand((unsigned)time(NULL));
-    fplayer->tl->x = rand() % (1800) - 900 ;
-    fplayer->tl->y = rand() % (63) - 13;
-    fplayer->tl->z = rand() % (1800) - 900;
+    //fplayer->tl->x = rand() % (1800) - 900 ;
+    //fplayer->tl->y = rand() % (63) - 13;
+    //fplayer->tl->z = rand() % (1800) - 900;
+    fplayer->tl->x = 0;
+    fplayer->tl->y = 20;
+    fplayer->tl->z = 0;
+    
     fplayer->phi = 0;
     fplayer->gamma = 180;
     fplayer->theta = 0;
@@ -2467,11 +2471,11 @@ void MissionTutorial3::start ()
         if(IncreaseDifficulty == 0){
             ThreeDObjects [i]->tl->x = fplayer->tl->x;
             ThreeDObjects [i]->tl->z = fplayer->tl->z - 20;
-            std::cout << "Increase Difficulty == 0 ---------------------------------------------------" << std::endl;
+            //std::cout << "Increase Difficulty == 0 ---------------------------------------------------" << std::endl;
         }
         else{
-            ThreeDObjects [i]->tl->x = fplayer->tl->x + (rand() % (2*IncreaseDifficulty + 1) - IncreaseDifficulty)/10.0;
-            ThreeDObjects [i]->tl->z = fplayer->tl->z - 2 - (rand() % IncreaseDifficulty)/10.0;
+            ThreeDObjects [i]->tl->x = fplayer->tl->x + (rand() % 1 - 0.5) * 2 * (IncreaseDifficulty)/10.0;
+            ThreeDObjects [i]->tl->z = fplayer->tl->z - 20;
         }
         
         ThreeDObjects [i]->tl->y = fplayer->tl->y;
@@ -2480,7 +2484,8 @@ void MissionTutorial3::start ()
         ThreeDObjects [i]->gamma = fplayer->gamma;
         ThreeDObjects [i]->theta = fplayer->theta;
         ThreeDObjects [i]->realspeed = fplayer->realspeed;
-        ThreeDObjects [i]->newinit(FIGHTER_SPIT9,0,400,400,800); // id, party, stupidity, precision, passivity
+        //ThreeDObjects [i]->newinit(FIGHTER_SPIT9,0,400,400,800); // id, party, stupidity, precision, passivity
+        ThreeDObjects [i]->newinit(STATIC_PASSIVE,0,400,400,800); // id, party, stupidity, precision, passivity
         ThreeDObjects [i]->deactivate ();
         }
     ThreeDObjects [1]->activate ();

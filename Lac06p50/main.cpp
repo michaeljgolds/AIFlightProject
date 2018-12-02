@@ -13107,7 +13107,7 @@ void sdlMainLoop ()
             float reward =  vaxis.dotproduct(&idealaxis);
 
 
-            std::cout << "fplayer->rot->rot: " << std::endl;
+            //std::cout << "fplayer->rot->rot: " << std::endl;
             fplayer->rot->calcRotation();
             for (int i=0; i < 3; i++) {
                 for (int j=0; j < 3; j++) {
@@ -13115,6 +13115,7 @@ void sdlMainLoop ()
                 }
                 std::cout << std::endl;
             }
+            /*
             std::cout << "fplayer->theta: " << fplayer->theta << std::endl;
             std::cout << "fplayer->phi: " << fplayer->phi << std::endl;
             std::cout << "fplayer->gamma: " << fplayer->gamma << std::endl;
@@ -13125,6 +13126,7 @@ void sdlMainLoop ()
             std::cout << "vaxis->y: " << vaxis.y << std::endl;
             std::cout << "vaxis->z: " << vaxis.z << std::endl;
             std::cout << "reward: " << reward << std::endl;
+            */
 
 			std::stringstream statess;
 			statess << fplayer->tl->x << " " << fplayer->tl->y << " " << fplayer->tl->z << " " << fplayer->realspeed << " " <<
@@ -13139,19 +13141,21 @@ void sdlMainLoop ()
             distToEnemy = fplayer->distance(ThreeDObjects[1]);
             if (prevDistToEnemy == -1.0f) prevDistToEnemy = distToEnemy;
             //float rewardFromDist = 0.01 * (distToEnemy < prevDistToEnemy) - 0.01 * (distToEnemy > prevDistToEnemy);
-            float rewardFromDist = (distToEnemy - prevDistToEnemy);
+            float rewardFromDist = (prevDistToEnemy - distToEnemy);
+
+            std::cout << "-------------------      " << rewardFromDist << std::endl;
 
             prevDistToEnemy = distToEnemy;
 
 			if (!fplayer->active && fplayer->explode >= 35 * timestep) {
-				statess << (0.0f + reward) << " " << 1;
+				statess << (-1.0f + rewardFromDist) << " " << 1;
 			}
 			else if (!ThreeDObjects[1]->active) {
 				std::cout << "Killed enemy, sending reward-------------------------------------------------------------" << std::endl;
-				statess << (0.0f + reward) << " " << 1;
+				statess << (1.0f + rewardFromDist) << " " << 1;
 			}
 			else {
-				statess << (0.0f + reward) << " " << 0;
+				statess << (0.0f + rewardFromDist) << " " << 0;
 			}
 
 			std::string sstate = statess.str();
@@ -13175,7 +13179,7 @@ void sdlMainLoop ()
 			 //control via python array:
             //switch is for discrete action:
 
-            
+
             switch (action[0]){
 				case '2':
 				fplayer->elevatoreffect = -0.5f;
@@ -13212,7 +13216,7 @@ void sdlMainLoop ()
 				break;
 
 			}
-        
+
 
 			//if statements are for continuous control
 /*
@@ -14503,6 +14507,7 @@ void TimerGame (int dt)
     // move objects
     for (i = 0; i < maxfighter; i ++)
         {
+        //if (i != 1)
         ThreeDObjects [i]->aiAction (dt, (AIObj **) ThreeDObjects, missile, laser, flare, chaff);
         float lev;
 

@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def normalizeState(state):
-    state[0] = state[0] /1000           #player x
+    state[0] = state[0] / 100           #player x
     state[1] = (state[1] - 25)/38       #player y
-    state[2] = state[2] / 1000          #player z
+    state[2] = state[2] / 100          #player z
     state[3] = (state[3] - 0.333 ) * 3  #player speed
     #state[4] = (state[4] - b ) * m  #accx
     #state[5] = (state[5] - b ) * m  #accy
@@ -27,9 +27,9 @@ def normalizeState(state):
     #state[10] = (state[10] - b ) * m  #elevator effect
     #state[11] = (state[11] - b ) * m  #rudder effect
     #state[12] = (state[12] - b ) * m  #roll effect
-    state[13] = (state[13] - 0 ) / 1000  #enemy x
+    state[13] = (state[13] - 0 ) / 100  #enemy x
     state[14] = (state[14]-25) / 38   #enemy y
-    state[15] = (state[15] - 0 ) / 1000  #enemy z
+    state[15] = (state[15] - 0 ) / 100  #enemy z
     state[16] = (state[16] - 0.333 ) * 3  #enemy speed
     state[17] = (state[17] - 180 ) / 180  #enemy phi
     state[18] = (state[18] - 180 ) / 180 #enemy gamma
@@ -38,7 +38,7 @@ def normalizeState(state):
 RL = PolicyGradient(
     n_actions=108,
     n_features=20,
-    learning_rate=0.002,
+    learning_rate=0.001,
     reward_decay=0.99,
     output_graph=True,
 )
@@ -64,15 +64,16 @@ for i_episode in range(30000):
     observation = np.array(state[0:20])
     while True:
     #  Wait for next request from client
-        actionNumber = RL.choose_action(observation)
-        action = actionList[actionNumber]
+        action = RL.choose_action(observation)
+        #action = actionList[actionNumber]
         # print(action)
 
     # print(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " " + str(action[3]) + " " + str(action[4]) + "          ")
-        socket.send_string(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " " + str(action[3]) + " " + str(action[4]) + "          ")
+        socket.send_string(str(action[0]) + " " + str(action[1]) + " " + str(action[2]) + " 0 " + str(action[4]) + "          ")
         message = socket.recv()
         #print("Received request: %s" % message)
         state = [float(f) for f in message.decode().split(' ')]
+        #print(state[13:16])
         normalizeState(state)
         #print("Player x,y,z: " + str(state[0:3]))
         #print("Player speed: " + str(state[3]))
@@ -85,11 +86,11 @@ for i_episode in range(30000):
 
         
         observation_ = np.array(state[0:20])
-        reward = 0.1 * state[20]
+        reward = state[20]
         donefloat = state[21]
         done = False
 
-        RL.store_transition(observation, actionNumber, reward)
+        RL.store_transition(observation, action, reward)
         
         if donefloat == 1 or len(RL.ep_rs) > 1000:
             done = True
