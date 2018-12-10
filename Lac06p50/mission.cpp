@@ -2448,17 +2448,17 @@ void MissionTutorial3::start ()
     l->flatten (AirfieldXMin+30, AirfieldYMin+4, 30, 5);
     playerInit ();
     srand((unsigned)time(NULL));
-    //fplayer->tl->x = rand() % (1800) - 900 ;
-    //fplayer->tl->y = rand() % (63) - 13;
-    //fplayer->tl->z = rand() % (1800) - 900;
-    fplayer->tl->x = 0;
-    fplayer->tl->y = 20;
-    fplayer->tl->z = 0;
+    fplayer->tl->x = rand() % (180) - 90 ;
+    fplayer->tl->y = rand() % (50);
+    fplayer->tl->z = rand() % (180) - 90;
+    //fplayer->tl->x = 0;
+    //fplayer->tl->y = 20;
+    //fplayer->tl->z = 0;
     
     fplayer->phi = 0;
     fplayer->gamma = 180;
     fplayer->theta = 0;
-    cout << "fplayerX: " << fplayer->tl->x << endl;
+    //cout << "fplayerX: " << fplayer->tl->x << endl;
 //    fplayer->tl->x = 20;
 //    fplayer->tl->z = 70;
 //    fplayer->phi = 60;
@@ -2475,7 +2475,7 @@ void MissionTutorial3::start ()
         }
         else{
             ThreeDObjects [i]->tl->x = fplayer->tl->x + (rand() % 1 - 0.5) * 2 * (IncreaseDifficulty)/10.0;
-            ThreeDObjects [i]->tl->z = fplayer->tl->z - 20;
+            ThreeDObjects [i]->tl->z = fplayer->tl->z - 20 + IncreaseDifficulty/10.0;
         }
         
         ThreeDObjects [i]->tl->y = fplayer->tl->y;

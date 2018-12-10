@@ -13109,12 +13109,15 @@ void sdlMainLoop ()
 
             //std::cout << "fplayer->rot->rot: " << std::endl;
             fplayer->rot->calcRotation();
+            /*
             for (int i=0; i < 3; i++) {
                 for (int j=0; j < 3; j++) {
                     std:: cout << fplayer->rot->rot[i][j] << " ";
                 }
                 std::cout << std::endl;
             }
+            */
+            
             /*
             std::cout << "fplayer->theta: " << fplayer->theta << std::endl;
             std::cout << "fplayer->phi: " << fplayer->phi << std::endl;
@@ -13143,19 +13146,21 @@ void sdlMainLoop ()
             //float rewardFromDist = 0.01 * (distToEnemy < prevDistToEnemy) - 0.01 * (distToEnemy > prevDistToEnemy);
             float rewardFromDist = (prevDistToEnemy - distToEnemy);
 
-            std::cout << "-------------------      " << rewardFromDist << std::endl;
+            std::cout << "-------------------      " << (rewardFromDist*10 + reward) << std::endl;
 
             prevDistToEnemy = distToEnemy;
-
+            /*
 			if (!fplayer->active && fplayer->explode >= 35 * timestep) {
 				statess << (-1.0f + rewardFromDist) << " " << 1;
 			}
-			else if (!ThreeDObjects[1]->active) {
+            */
+            //else if
+			if (!ThreeDObjects[1]->active) {
 				std::cout << "Killed enemy, sending reward-------------------------------------------------------------" << std::endl;
-				statess << (1.0f + rewardFromDist) << " " << 1;
+				statess << (1.0f + (rewardFromDist*10 + reward)) << " " << 1;
 			}
 			else {
-				statess << (0.0f + rewardFromDist) << " " << 0;
+				statess << (0.0f + (rewardFromDist*10 + reward)) << " " << 0;
 			}
 
 			std::string sstate = statess.str();
