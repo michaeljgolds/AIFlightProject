@@ -2454,7 +2454,7 @@ void MissionTutorial3::start ()
     //fplayer->tl->x = 0;
     //fplayer->tl->y = 20;
     //fplayer->tl->z = 0;
-    
+
     fplayer->phi = 0;
     fplayer->gamma = 180;
     fplayer->theta = 0;
@@ -2468,6 +2468,7 @@ void MissionTutorial3::start ()
         ThreeDObjects [i]->party = 0;
         ThreeDObjects [i]->target = ThreeDObjects [0];
         ThreeDObjects [i]->o = &model_figb;
+        /*
         if(IncreaseDifficulty == 0){
             ThreeDObjects [i]->tl->x = fplayer->tl->x;
             ThreeDObjects [i]->tl->z = fplayer->tl->z - 20;
@@ -2477,9 +2478,11 @@ void MissionTutorial3::start ()
             ThreeDObjects [i]->tl->x = fplayer->tl->x + (rand() % 1 - 0.5) * 2 * (IncreaseDifficulty)/10.0;
             ThreeDObjects [i]->tl->z = fplayer->tl->z - 20 + IncreaseDifficulty/10.0;
         }
-        
-        ThreeDObjects [i]->tl->y = fplayer->tl->y;
-        
+        */
+        //ThreeDObjects [i]->tl->y = fplayer->tl->y;
+        ThreeDObjects [i]->tl->x = rand() % (180) - 90 ;
+        ThreeDObjects [i]->tl->z = rand() % (180) - 90;
+        ThreeDObjects [i]->tl->y = rand() % (50);
         ThreeDObjects [i]->phi = fplayer->phi;
         ThreeDObjects [i]->gamma = fplayer->gamma;
         ThreeDObjects [i]->theta = fplayer->theta;
