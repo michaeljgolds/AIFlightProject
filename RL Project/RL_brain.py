@@ -70,8 +70,8 @@ class PolicyGradient:
         # fc1
         layer1 = tf.layers.dense(
             inputs=self.tf_obs,
-            units=10,
-            activation=tf.nn.relu6,  
+            units=600,
+            activation=tf.nn.relu,  
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc1',
             use_bias=True,
@@ -79,8 +79,8 @@ class PolicyGradient:
         )
         layer2 = tf.layers.dense(
             inputs=layer1,
-            units=10,
-            activation=tf.nn.relu6, 
+            units=500,
+            activation=tf.nn.relu, 
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc2',
             use_bias=True,
@@ -88,8 +88,8 @@ class PolicyGradient:
         )
         layer3 = tf.layers.dense(
             inputs=layer2,
-            units=10,
-            activation=tf.nn.relu6, 
+            units=250,
+            activation=tf.nn.relu, 
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc3',
             use_bias=True,
@@ -97,8 +97,8 @@ class PolicyGradient:
         )
         layer4 = tf.layers.dense(
             inputs=layer3,
-            units=5,
-            activation=tf.nn.relu6, 
+            units=100,
+            activation=tf.nn.relu, 
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc4',
             use_bias=True,
@@ -106,7 +106,7 @@ class PolicyGradient:
         )
         layer = tf.layers.dense(
             inputs=self.tf_obs,
-            units=10,
+            units=1000,
             activation=tf.nn.tanh, 
             kernel_initializer=tf.contrib.layers.xavier_initializer(),
             name='fc5',
